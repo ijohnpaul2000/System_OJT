@@ -23,7 +23,22 @@ const Login = ({ setIsAuth }) => {
       await logIn(email, password);
       navigate("/manuscript");
     } catch (err) {
-      setError(err.code);
+      
+      //Error Validation
+      switch (err.code) {
+        case "auth/wrong-password":
+          setError("Incorrect Password");
+          break;
+        case "auth/user-not-found":
+          setError("User not found");
+          break;
+        case "auth/network-request-failed":
+          setError("Network connection failed.");
+          break;
+        default:
+          setError("Error found. Try again later.")
+          break;
+      }
     }
   };
 
