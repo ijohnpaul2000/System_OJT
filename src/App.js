@@ -7,6 +7,7 @@ import { UserAuthContextProvider } from "./context/UserAuthContext";
 import Landing from "./pages/Landing";
 import "./sass/index.scss";
 import Manuscript from "./pages/Manuscript";
+import Guest from "./pages/Guest";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/guest" element={<Guest />} />
         <Route
           path="/manuscript"
           element={

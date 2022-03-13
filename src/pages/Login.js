@@ -20,7 +20,7 @@ const Login = () => {
       await logIn(email, password);
       navigate("/manuscript");
     } catch (err) {
-      setError(err.message);
+      setError(err.code);
     }
   };
 
@@ -77,7 +77,7 @@ const Login = () => {
                 <Button
                   variant="primary"
                   type="Submit"
-                  className="landing-btns"
+                  className="landing-btns guest"
                 >
                   <Link to="/guest" className="link_guest">
                     Login as Guest

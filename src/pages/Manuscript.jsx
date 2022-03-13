@@ -33,8 +33,8 @@ const Manuscript = () => {
   const [role, setRole] = useState("");
   const navigate = useNavigate();
 
-  let component;
-  const { logOut, user } = useUserAuth();
+  let component = "";
+  const { logOut } = useUserAuth();
   const handleLogout = async () => {
     try {
       await logOut();
@@ -102,7 +102,7 @@ const Manuscript = () => {
       <Container fluid="md" className="manuscript">
         <Row>
           <Col className="d-flex justify-content-end align-items-center">
-            <DropdownButton id="dropdown-basic-button" title="Dropdown button">
+            <DropdownButton id="dropdown-basic-button" title="Settings">
               <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
               <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
               <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>

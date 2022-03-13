@@ -19,7 +19,14 @@
   font-size: 1.2rem;
   font-weight: 700;
 }
-
+.dropdown-toggle {
+  font-family: var(--font-family);
+  font-size: 1rem;
+  background-color: var(--button-bg);
+  color: white;
+  text-decoration: none;
+  border-radius: 2rem;
+}
 .search-container {
   width: 25rem;
   height: 3.2rem;

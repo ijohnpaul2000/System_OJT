@@ -14,9 +14,9 @@ const Navigationbar = () => {
 
         <Navbar.Toggle className="navbar-toggler" />
         <Navbar.Collapse>
-          <Nav className="ms-auto d-flex justify-content-end mt-4 align-items-end">
+          <Nav className="ms-auto d-flex justify-content-end mt-4 align-items-center">
             <Link
-              to="/guestLogin"
+              to="/guest"
               className="link link_guest mr-4 d-flex justify-content-end align-items-end"
             >
               Guest Login
