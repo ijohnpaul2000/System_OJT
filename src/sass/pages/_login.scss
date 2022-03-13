@@ -31,6 +31,19 @@
     margin-bottom: 2rem;
   }
 
+  .reset-btn {
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: none;
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+    &:hover {
+      transform: scale(1.02);
+    }
+  }
   .link_guest {
     font-family: var(--font-family);
     font-size: 1rem;

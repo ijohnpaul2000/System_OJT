@@ -5,13 +5,16 @@ import { Button } from "react-bootstrap";
 import { useUserAuth } from "../context/UserAuthContext";
 import logo from "../assets/login.png";
 import Navigationbar from "../components/NavigationBar";
+import ForgotPassword from "./Forgot_Pass";
+import Fp_Modal from "../components/Fp_Modal";
 
-const Login = () => {
+const Login = ({ setIsAuth }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const { logIn } = useUserAuth();
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -87,7 +90,11 @@ const Login = () => {
             </div>
             <div className="p-4 box mt-3 text-center">
               Forgot Password?{" "}
-              <Link to="/reset-password">Reset your password</Link>
+              <button className="reset-btn" onClick={() => setShowModal(true)}>
+                {" "}
+                Reset your password.
+                {showModal && <Fp_Modal />}
+              </button>
             </div>
           </Col>
           <Col

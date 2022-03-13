@@ -8,6 +8,7 @@ import Landing from "./pages/Landing";
 import "./sass/index.scss";
 import Manuscript from "./pages/Manuscript";
 import Guest from "./pages/Guest";
+import ForgotPassword from "./pages/Forgot_Pass";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/guest" element={<Guest />} />
+        <Route path="/resetpassword" element={<ForgotPassword />} />
         <Route
           path="/manuscript"
           element={
