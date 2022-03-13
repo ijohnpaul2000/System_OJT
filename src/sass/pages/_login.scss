@@ -1,0 +1,82 @@
+.landing_container {
+  height: calc(100vh - 80px);
+  overflow-x: hidden;
+
+  .login {
+    font-family: var(--font-family);
+    font-weight: bold;
+    font-size: 3rem;
+    color: var(--accent-color2);
+  }
+  .sub_title {
+    font-family: var(--font-family);
+    font-size: 1rem;
+    color: var(--accent-color2);
+  }
+  .label {
+    font-family: var(--font-family);
+    font-size: 1rem;
+    color: var(--accent-color2);
+  }
+  .input {
+    font-family: var(--font-family);
+    font-size: 0.9rem;
+    color: var(--accent-color2);
+    background-color: var(--input);
+  }
+  .form-header {
+    font-family: var(--font-family);
+    font-size: 1.3rem;
+    color: var(--accent-color2);
+    margin-bottom: 2rem;
+  }
+
+  .link_guest {
+    font-family: var(--font-family);
+    font-size: 1rem;
+    background-color: var(--button-bg);
+    color: white;
+    opacity: 0.9;
+    text-decoration: none;
+  }
+  .landing-btns {
+    width: 25%;
+    background-color: var(--button-bg);
+  }
+  .line-container {
+    width: 100%;
+    height: 20px;
+    border-bottom: 1px solid black;
+    text-align: center;
+  }
+  .or-txt {
+    font-size: 1.3rem;
+    background-color: #ffffff;
+    padding: 10 10px;
+  }
+  .header {
+    font-family: var(--font-family);
+    font-size: 2rem;
+    text-align: center;
+    color: var(--accent-color2);
+  }
+  .description {
+    font-family: var(--font-family);
+    font-size: 1 rem;
+    text-align: center;
+    color: var(--accent-color2);
+  }
+  .fpass_btn {
+    border: none;
+    background-color: Transparent;
+    outline: none;
+  }
+  .fpass_text {
+    text-decoration: none;
+    color: blue;
+  }
+  .login-logo {
+    height: 100%;
+    width: 100%;
+  }
+}

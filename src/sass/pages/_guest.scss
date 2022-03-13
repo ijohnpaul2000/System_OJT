@@ -1,0 +1,17 @@
+.guest_container {
+  height: calc(100vh - 80px);
+}
+.otp_field {
+  height: 5rem;
+  width: 5rem;
+  font-size: 2rem;
+  font-family: var(--font-family);
+  font-weight: bold;
+  background-color: var(--input);
+}
+
+.btn_user {
+  font-family: var(--font-family);
+  font-weight: bold;
+  background-color: red;
+}

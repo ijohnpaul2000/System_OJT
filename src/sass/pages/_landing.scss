@@ -1,0 +1,18 @@
+.container_landing {
+  height: 80vh;
+  .title {
+    font-family: var(--font-family);
+    font-size: 3rem;
+    font-weight: bold;
+  }
+  .description {
+    font-family: var(--font-family);
+    font-size: 1.4rem;
+    font-weight: 500;
+  }
+  .landing-logo {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+}

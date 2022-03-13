@@ -1,0 +1,28 @@
+.brand {
+  font-weight: bold;
+  font-family: var(--font-family);
+  text-decoration: none;
+}
+.link {
+  text-decoration: none;
+  color: var(--accent-color2);
+  font-family: var(--font-family);
+  font-weight: 500;
+
+  &:hover {
+    color: var(--accent-color2);
+  }
+}
+
+.link_user {
+  background-color: var(--button-bg);
+  padding: 0.5rem 1.5rem;
+  border-radius: 10px;
+  color: white;
+  opacity: 0.9;
+
+  &:hover {
+    color: white;
+    opacity: 1;
+  }
+}
