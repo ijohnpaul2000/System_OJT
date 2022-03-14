@@ -12,7 +12,20 @@ import { auth } from "../firebase";
 const userAuthContext = createContext();
 
 export const UserAuthContextProvider = ({ children }) => {
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState("");
+
+  const [otpResult, setOtpResult] = useState("");
+  const generateOtp = (length) => {
+    var otp = "";
+    var characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var charactersLength = characters.length;
+    for (var i = 0; i < length + 1; i++) {
+      otp += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    setOtpResult(otp);
+    console.log("result is: " + otpResult);
+  };
 
   const logIn = (email, password) => {
     return signInWithEmailAndPassword(auth, email, password);
@@ -51,6 +64,8 @@ export const UserAuthContextProvider = ({ children }) => {
         logOut,
         resetPassword,
         submitResetPassword,
+        generateOtp,
+        otpResult,
       }}
     >
       {children}

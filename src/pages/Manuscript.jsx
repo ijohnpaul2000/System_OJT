@@ -34,7 +34,8 @@ const Manuscript = () => {
   const navigate = useNavigate();
 
   let component = "";
-  const { logOut } = useUserAuth();
+  const { logOut, generateOtp, otpResult } = useUserAuth();
+
   const handleLogout = async () => {
     try {
       await logOut();
@@ -89,6 +90,9 @@ const Manuscript = () => {
     getAuthUser();
   }, [userc, loading]);
 
+  const handleGenerateOtp = () => {
+    generateOtp(3);
+  };
   return (
     <IconContext.Provider
       value={{
@@ -98,7 +102,8 @@ const Manuscript = () => {
       }}
     >
       <p>Currenly Signed in as: {role} </p>
-
+      <button onClick={handleGenerateOtp}>Generate OTP </button>
+      <p>Otp is: {otpResult}</p>
       <Container fluid="md" className="manuscript">
         <Row>
           <Col className="d-flex justify-content-end align-items-center">

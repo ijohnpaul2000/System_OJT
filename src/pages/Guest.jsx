@@ -1,11 +1,31 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import { Form, Button, Container, Col, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import logo from "../assets/login.png";
 import { generateOTP } from "./Manuscript";
 import Navigationbar from "../components/NavigationBar";
+import OtpInput from "react-otp-input";
+import { useUserAuth } from "../context/UserAuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Guest = () => {
+  let navigate = useNavigate();
+  const { otpResult } = useUserAuth();
+
+  const [formOtp, setFormOtp] = useState("");
+
+  const otpValidationHandler = (e) => {
+    e.preventDefault();
+    console.log("from userAuth: " + otpResult);
+    if (otpResult === formOtp) {
+      navigate("/manuscript");
+      console.log("matched");
+    } else {
+      console.log("this is the otp : " + otpResult);
+      console.log("this is my input : " + formOtp);
+      console.log("otp not match.");
+    }
+  };
   return (
     <>
       <Navigationbar />
@@ -27,57 +47,47 @@ const Guest = () => {
               Once you already have the OTP from the Dean or Chairperson of the
               CEIT Department, please enter the OTP below.
             </p>
-            <Form className="mt-4">
+            <Form className="mt-4" onSubmit={otpValidationHandler}>
               <Row>
                 <Form.Label className="label d-flex justify-content-mb-start">
                   Enter Verification Code
                 </Form.Label>
               </Row>
               <Row md={12}>
-                <Form.Group className="group d-flex flex-row justify-content-center align-items-center ">
+                <Form.Group className="input_container my-5 d-flex flex-row justify-content-center align-items-center ">
                   <Form.Control
-                    className="me-lg-4 me-md-1 me-sm-4 me-2 text-center form-control rounded  otp_field"
+                    className="w-50 me-lg-4 me-md-1 me-sm-4 me-2 text-center form-control rounded otp_input"
                     type="text"
-                    placeholder="*"
-                    maxLength="1"
+                    onChange={(e) => {
+                      setFormOtp(e.target.value);
+                      console.log(formOtp);
+                    }}
+                    placeholder="OTP"
+                    maxLength="4"
                     autoComplete="on"
-                  />
-                  <Form.Control
-                    className="me-lg-4 me-md-1 me-sm-4 me-2 text-center form-control rounded  otp_field"
-                    type="text"
-                    placeholder="*"
-                    maxLength="1"
-                    autoComplete="on"
-                  />
-                  <Form.Control
-                    className="me-lg-4 me-md-1 me-sm-4 me-2 text-center form-control rounded  otp_field"
-                    type="text"
-                    placeholder="*"
-                    maxLength="1"
-                    autoComplete="on"
-                  />
-                  <Form.Control
-                    className="me-lg-4 me-md-1 me-sm-4 me-2 text-center form-control rounded  otp_field"
-                    type="text"
-                    placeholder="*"
-                    maxLength="1"
-                    autoComplete="on"
+                    autoFocus={true}
                   />
                 </Form.Group>
               </Row>
               <div className="d-flex justify-content-center mt-3">
-                <Button variant="primary" type="submit">
+                <Button type="submit" className="otp_btn">
                   Confirm OTP
                 </Button>
               </div>
-              <div className="line-container">
+              <div className="line-container mt-5 mb-5">
                 <span className="or-txt">or</span>
               </div>
-              <Link to="/Login" className="d-flex justify-content-center pt-4">
-                <Button variant="primary" type="submit">
-                  Login as User
+              <div className="d-grid gap-4 mt-4 d-flex justify-content-center">
+                <Button
+                  variant="primary"
+                  type="Submit"
+                  className="landing-btns user"
+                >
+                  <Link to="/login" className="link-user">
+                    Login as User
+                  </Link>
                 </Button>
-              </Link>
+              </div>
             </Form>
           </Col>
           <Col
