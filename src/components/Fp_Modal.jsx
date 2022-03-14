@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import {
   Button,
   Modal,
@@ -31,36 +31,55 @@ const Fp_Modal = () => {
   const handleShow = () => setShow(false);
   const navigate = useNavigate();
 
-  const [errorCode, setErrorCode] = useState("");
-  const [EmailError, setEmailError] = useState("");
-
   const { resetPassword } = useUserAuth();
   const [error, setError] = useState("");
 
-  const [success, setSuccess] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
   const notify = () => toast("Wow so easy!");
+
+  const timeout = () => {
+    navigate("/");
+    navigate("/login");
+  };
 
   const handleResetPassword = async (e) => {
     e.preventDefault();
     setError("");
     try {
       await resetPassword(email);
-      setSuccess(true);
-    } catch (err) {
-      setSuccess(false);
-      setError(err.code);
-    }
-    console.log(error);
-  };
+      console.log("After resetPassword :");
 
+      setIsSuccess(true);
+
+      console.log("success? : " + isSuccess);
+      if (isSuccess) {
+        setTimeout(timeout, 2000);
+      }
+    } catch (err) {
+      setIsSuccess(false);
+      setError(err.code);
+
+      //Error Validation
+      switch (err.code) {
+        case "auth/wrong-password":
+          setError("Incorrect Password.");
+          break;
+        case "auth/user-not-found":
+          setError("User not found.");
+          break;
+        case "auth/network-request-failed":
+          setError("Network connection failed.");
+          break;
+        default:
+          setError("Error found. Try again later.");
+          break;
+      }
+    }
+  };
   return ReactDom.createPortal(
     <div>
-      <Modal
-        show={show}
-        backdrop="static"
-        keyboard={false}
-        onHide={handleClose}
-      >
+      <Modal show={show} keyboard={false} onHide={handleClose}>
         <Modal.Header closeButton></Modal.Header>
         <Container fluid="md">
           <Col
@@ -81,15 +100,11 @@ const Fp_Modal = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <Button
-                className="fpass_btn my-5"
-                type="Submit"
-                onClick={() => (success ? notify() : "")}
-              >
+              <Button className="fpass_btn my-5" type="Submit">
                 Submit
               </Button>
               <br />
-              {success && (
+              {isSuccess && (
                 <Alert variant="success">
                   Check your email and follow for further instructions!
                 </Alert>

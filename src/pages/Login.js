@@ -23,7 +23,6 @@ const Login = ({ setIsAuth }) => {
       await logIn(email, password);
       navigate("/manuscript");
     } catch (err) {
-      
       //Error Validation
       switch (err.code) {
         case "auth/wrong-password":
@@ -36,7 +35,7 @@ const Login = ({ setIsAuth }) => {
           setError("Network connection failed.");
           break;
         default:
-          setError("Error found. Try again later.")
+          setError("Error found. Try again later.");
           break;
       }
     }
@@ -45,12 +44,12 @@ const Login = ({ setIsAuth }) => {
   return (
     <>
       <Navigationbar />
-      <Container fluid="md">
+      <Container fluid="md" className="landing_container">
         <Row>
           <Col
             sm={12}
             md={6}
-            className="landing_container d-flex justify-content-center flex-column"
+            className=" d-flex justify-content-center flex-column"
           >
             <div className="p-4 box">
               <p className="login mb-3">Login</p>

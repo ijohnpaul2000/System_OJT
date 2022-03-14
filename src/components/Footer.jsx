@@ -5,7 +5,12 @@ const Footer = () => {
   const year = date.getFullYear();
   return (
     <Container fluid="md">
-      <div className="d-flex justify-content-center align-content-center">
+      <div
+        className="footer_container d-flex
+      justify-content-center
+      justify-content-sm-center
+      "
+      >
         Copyright &copy; {year} Pamantasan ng Lungsod ng Valenzuela. All rights
         reserved.
       </div>

@@ -1,6 +1,77 @@
-.checklist_link {
-  text-decoration: none;
-  font-family: var(--font-family);
-  color: var(--background);
-  line-height: 0.5rem;
+.forgotpass_container {
+  height: calc(100vh - 80px);
+  overflow-x: hidden;
+  .resetpassword {
+    font-family: var(--font-family);
+    font-weight: bold;
+    font-size: 3rem;
+    color: var(--accent-color2);
+  }
+  .sub_title {
+    font-family: var(--font-family);
+    font-size: 1rem;
+    color: var(--accent-color2);
+  }
+  .label {
+    font-family: var(--font-family);
+    font-size: 1rem;
+    color: var(--accent-color2);
+  }
+  .input {
+    font-family: var(--font-family);
+    font-size: 0.9rem;
+    color: var(--accent-color2);
+    background-color: var(--input);
+  }
+  .form-header {
+    font-family: var(--font-family);
+    font-size: 1.3rem;
+    color: var(--accent-color2);
+    margin-bottom: 2rem;
+  }
+
+  .reset-btn {
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: none;
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+    &:hover {
+      transform: scale(1.02);
+    }
+  }
+  .link_guest {
+    font-family: var(--font-family);
+    font-size: 1rem;
+    background-color: var(--button-bg);
+    color: white;
+    opacity: 0.9;
+    text-decoration: none;
+  }
+  .landing-btns {
+    width: 10rem;
+    background-color: var(--button-bg);
+  }
+
+  .header {
+    font-family: var(--font-family);
+    font-size: 2rem;
+    text-align: center;
+    color: var(--accent-color2);
+  }
+
+  .description {
+    font-family: var(--font-family);
+    font-size: 1 rem;
+    text-align: center;
+    color: var(--accent-color2);
+  }
+
+  .resetpass-logo {
+    width: 60%;
+    height: 100%;
+  }
 }
