@@ -21,7 +21,9 @@ import {
 } from "firebase/firestore";
 import { useUserAuth } from "../context/UserAuthContext";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { db, auth } from "../firebase";
+import { db, auth } from "../firebase"; 
+import ModalComp from "../components/ModalComp";
+import AddThesis from "../components/AddThesis";
 import logo from "../assets/folder_logo.png";
 
 const Manuscript = () => {
@@ -31,9 +33,13 @@ const Manuscript = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
+
+  const [isModalOpened, setIsModalOpened] = useState(false);
+  console.log(isModalOpened);
   const navigate = useNavigate();
 
   let component = "";
+
   const { logOut } = useUserAuth();
   const handleLogout = async () => {
     try {
@@ -80,6 +86,10 @@ const Manuscript = () => {
     component = <h1>Hello Encoder</h1>;
   }
 
+  const addResearch = () => {
+    setIsModalOpened(true);
+  }
+
   //Rendering
   useEffect(() => {
     if (loading) return;
@@ -98,7 +108,7 @@ const Manuscript = () => {
       }}
     >
       <p>Currenly Signed in as: {role} </p>
-
+ 
       <Container fluid="md" className="manuscript">
         <Row>
           <Col className="d-flex justify-content-end align-items-center">
@@ -163,6 +173,10 @@ const Manuscript = () => {
             )}
             <Button className="settings-btns">Import Masterlist</Button>
             <Button className="settings-btns">Import Export Masterlist</Button>
+            <Button className="settings-btns" onClick={() => setIsModalOpened(true)}>
+              Add Research Data
+              { isModalOpened && <ModalComp/>}
+            </Button>
 
             <div className="dropdown-container">
               <Dropdown>
