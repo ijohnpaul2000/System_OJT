@@ -23,6 +23,7 @@ import { useUserAuth } from "../context/UserAuthContext";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { db, auth } from "../firebase";
 import logo from "../assets/folder_logo.png";
+import Add_Modal from "../components/Add_Modal";
 
 const Manuscript = () => {
   //Use States
@@ -31,6 +32,7 @@ const Manuscript = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
+  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
   let component = "";
@@ -168,6 +170,10 @@ const Manuscript = () => {
             )}
             <Button className="settings-btns">Import Masterlist</Button>
             <Button className="settings-btns">Import Export Masterlist</Button>
+            <Button className="settings-btns" onClick={() => setShowModal(true)}>
+              Add Thesis
+              {showModal && <Add_Modal />}
+            </Button>
 
             <div className="dropdown-container">
               <Dropdown>
