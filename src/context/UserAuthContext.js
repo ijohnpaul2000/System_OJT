@@ -6,6 +6,9 @@ import {
   signOut,
   sendPasswordResetEmail,
   confirmPasswordReset,
+  getAuth,
+  setPersistence,
+  browserSessionPersistence
 } from "firebase/auth";
 import { auth } from "../firebase";
 
@@ -28,7 +31,19 @@ export const UserAuthContextProvider = ({ children }) => {
   };
 
   const logIn = (email, password) => {
-    return signInWithEmailAndPassword(auth, email, password);
+    const authenticate = getAuth();
+
+    //Set Persistence to automatically signout the user when closing a tab/window.
+    setPersistence(authenticate, browserSessionPersistence)
+      .then(() => {
+        return signInWithEmailAndPassword(auth, email, password);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+
+        console.log(errorCode + "-" + errorMessage);
+      });
   };
   const signUp = (email, password) => {
     return createUserWithEmailAndPassword(auth, email, password);
