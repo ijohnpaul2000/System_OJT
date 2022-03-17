@@ -24,6 +24,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { db, auth } from "../firebase";
 import logo from "../assets/folder_logo.png";
 import Add_Modal from "../components/Add_Modal";
+import ManusList from "../components/ManusList";
 
 const Manuscript = () => {
   //Use States
@@ -211,14 +212,15 @@ const Manuscript = () => {
 
         <Row>
           <Col className="d-flex flex-column justify-content-center align-items-center">
-            <div className="table-container d-flex flex-column justify-content-center align-items-center">
+            {/* <div className="table-container d-flex flex-column justify-content-center align-items-center">
               <img src={logo} alt="" className="img-empty" />
               <h2>Empty Data</h2>
               <p>The manuscript list has no data to display</p>
-            </div>
+            </div> */}
             {/* <table className="table-empty d-flex flex-column justify-content-center align-items-center"> */}
 
             {/* </table> */}
+          <ManusList />
           </Col>
         </Row>
       </Container>
