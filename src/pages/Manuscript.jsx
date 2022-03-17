@@ -29,6 +29,7 @@ import {
 import { db, auth } from "../firebase";
 import logo from "../assets/folder_logo.png";
 import Add_Modal from "../components/Add_Modal";
+import ManusList from "../components/ManusList";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -290,11 +291,12 @@ const Manuscript = () => {
 
         <Row>
           <Col className="d-flex flex-column justify-content-center align-items-center">
-            <div className="table-container d-flex flex-column justify-content-center align-items-center">
+            {/* <div className="table-container d-flex flex-column justify-content-center align-items-center">
               <img src={logo} alt="" className="img-empty" />
               <h2>Empty Data</h2>
               <p>The manuscript list has no data to display</p>
-            </div>
+            </div> */}
+            <ManusList />
           </Col>
         </Row>
       </Container>

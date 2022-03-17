@@ -18,7 +18,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Fp_Modal = () => {
-  const [show, setShow] = useState(true);
+  const [show, setShow] = useState(false);
   const [openModal, setOpenModal] = useState(false);
 
   const [email, setEmail] = useState("");
