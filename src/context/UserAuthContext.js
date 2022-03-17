@@ -8,7 +8,7 @@ import {
   confirmPasswordReset,
   getAuth,
   setPersistence,
-  browserSessionPersistence
+  browserSessionPersistence,
 } from "firebase/auth";
 import { auth } from "../firebase";
 
@@ -17,33 +17,17 @@ const userAuthContext = createContext();
 export const UserAuthContextProvider = ({ children }) => {
   const [user, setUser] = useState("");
 
-  const [otpResult, setOtpResult] = useState("");
-  const generateOtp = (length) => {
-    var otp = "";
-    var characters =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    var charactersLength = characters.length;
-    for (var i = 0; i < length + 1; i++) {
-      otp += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    setOtpResult(otp);
-    console.log("result is: " + otpResult);
-  };
-
   const logIn = (email, password) => {
     const authenticate = getAuth();
 
     //Set Persistence to automatically signout the user when closing a tab/window.
-    setPersistence(authenticate, browserSessionPersistence)
-      .then(() => {
-        return signInWithEmailAndPassword(auth, email, password);
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-
-        console.log(errorCode + "-" + errorMessage);
-      });
+    try {
+      setPersistence(authenticate, browserSessionPersistence);
+      return signInWithEmailAndPassword(auth, email, password);
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+    }
   };
   const signUp = (email, password) => {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -79,8 +63,6 @@ export const UserAuthContextProvider = ({ children }) => {
         logOut,
         resetPassword,
         submitResetPassword,
-        generateOtp,
-        otpResult,
       }}
     >
       {children}

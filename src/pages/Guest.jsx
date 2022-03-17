@@ -1,35 +1,60 @@
 import React, { useState, useRef } from "react";
-import { Form, Button, Container, Col, Row } from "react-bootstrap";
+import { Form, Button, Container, Col, Row, Alert } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import logo from "../assets/login.png";
 import { generateOTP } from "./Manuscript";
 import Navigationbar from "../components/NavigationBar";
-import OtpInput from "react-otp-input";
 import { useUserAuth } from "../context/UserAuthContext";
 import { useNavigate } from "react-router-dom";
+import { compileStringAsync } from "sass";
 
 const Guest = () => {
-  let navigate = useNavigate();
-  const { otpResult } = useUserAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const { logIn } = useUserAuth();
+  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+  const [success, setSuccess] = useState("");
 
-  const [formOtp, setFormOtp] = useState("");
+  const timeout = () => {
+    navigate("/manuscript");
+  };
 
-  const otpValidationHandler = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("from userAuth: " + otpResult);
-    if (otpResult === formOtp) {
-      navigate("/manuscript");
-      console.log("matched");
-    } else {
-      console.log("this is the otp : " + otpResult);
-      console.log("this is my input : " + formOtp);
-      console.log("otp not match.");
+    setError("");
+    try {
+      if (email === "userguestmanuscript@gmail.com") {
+        await logIn(email, password);
+        setSuccess("Success! Redirecting...");
+        setTimeout(timeout, 2000);
+      } else {
+        setError("You can't use this email address");
+        console.log("You can't use this email address");
+      }
+    } catch (err) {
+      //Error Validation
+      console.log("this is the error: " + err);
+      switch (err.code) {
+        case "auth/wrong-password":
+          setError("Incorrect Password");
+          break;
+        case "auth/user-not-found":
+          setError("User not found");
+          break;
+        case "auth/network-request-failed":
+          setError("Network connection failed.");
+          break;
+        default:
+          setError("Error found. Try again later.");
+          break;
+      }
     }
   };
   return (
     <>
       <Navigationbar />
-
       <Container fluid="sm" className="guest_container">
         <Row>
           <Col
@@ -39,55 +64,46 @@ const Guest = () => {
           >
             <h2 className="login">Guest Login</h2>
             <p className="sub_title text-start">
-              Before you can have an official guest access to CEIT Manuscrip
-              Information System, you may request and One-Time-Password(OTP)
-              from the dean or chairperson of the CEIT Department.
+              Before you can have an official guest access to CEIT Manuscript
+              Information System, you may request and get the{" "}
+              <strong>Email & Password</strong> from the <strong>dean</strong>{" "}
+              or <strong>chairperson</strong> of the CEIT Department.
             </p>
             <p className="sub_title text-start">
-              Once you already have the OTP from the Dean or Chairperson of the
-              CEIT Department, please enter the OTP below.
+              Once you already have the <strong>credentials</strong> from the
+              Dean or Chairperson of the CEIT Department, please enter the{" "}
+              <strong>credentials</strong> below.
             </p>
-            <Form className="mt-4" onSubmit={otpValidationHandler}>
-              <Row>
-                <Form.Label className="label d-flex justify-content-mb-start">
-                  Enter Verification Code
-                </Form.Label>
-              </Row>
-              <Row md={12}>
-                <Form.Group className="input_container my-5 d-flex flex-row justify-content-center align-items-center ">
-                  <Form.Control
-                    className="w-50 me-lg-4 me-md-1 me-sm-4 me-2 text-center form-control rounded otp_input"
-                    type="text"
-                    onChange={(e) => {
-                      setFormOtp(e.target.value);
-                      console.log(formOtp);
-                    }}
-                    placeholder="OTP"
-                    maxLength="4"
-                    autoComplete="on"
-                    autoFocus={true}
-                  />
-                </Form.Group>
-              </Row>
-              <div className="d-flex justify-content-center mt-3">
-                <Button type="submit" className="otp_btn">
-                  Confirm OTP
-                </Button>
-              </div>
-              <div className="line-container mt-5 mb-5">
-                <span className="or-txt">or</span>
-              </div>
-              <div className="d-grid gap-4 mt-4 d-flex justify-content-center">
+            <Form onSubmit={handleSubmit}>
+              {success && <Alert variant="success">{success}</Alert>}
+              {error && <Alert variant="danger">{error}</Alert>}
+              <Form.Group className="mb-3" controlId="formBasicEmail">
+                <Form.Text className="form-header">Email Address</Form.Text>
+                <Form.Control
+                  type="email"
+                  placeholder="Email address"
+                  className="input mt-2"
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="formBasicPassword">
+                <Form.Text className="form-header">Password</Form.Text>
+                <Form.Control
+                  type="password"
+                  placeholder="Password"
+                  className="input mt-2"
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </Form.Group>
+              <div className="d-grid gap-2 d-flex justify-content-end">
                 <Button
                   variant="primary"
                   type="Submit"
-                  className="landing-btns user"
+                  className="landing-btns"
                 >
-                  <Link to="/login" className="link-user">
-                    Login as User
-                  </Link>
+                  Log In
                 </Button>
-              </div>
+              </div>{" "}
             </Form>
           </Col>
           <Col

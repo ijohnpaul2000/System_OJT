@@ -9,6 +9,7 @@ import {
   Dropdown,
   DropdownButton,
 } from "react-bootstrap";
+import { Alert, Toast } from "react-bootstrap";
 import { FaCog, FaSearch } from "react-icons/fa";
 import { IconContext } from "react-icons";
 import {
@@ -20,23 +21,56 @@ import {
   doc,
 } from "firebase/firestore";
 import { useUserAuth } from "../context/UserAuthContext";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import {
+  getAuth,
+  onAuthStateChanged,
+  sendPasswordResetEmail,
+} from "firebase/auth";
 import { db, auth } from "../firebase";
 import logo from "../assets/folder_logo.png";
 import Add_Modal from "../components/Add_Modal";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Manuscript = () => {
   //Use States
   const [userc, loading, error] = useAuthState(auth);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
+
   const [role, setRole] = useState("");
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
+  const [first, setfirst] = useState("");
+  //for setting emails
+  const [email, setEmail] = useState("");
+  const [show, setShow] = useState(false);
+  const [errorMsg, setErrorMsg] = useState();
+
+  const notifySuccess = () =>
+    toast.success("Success! Check the guest's email address.", {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  const notifyError = () =>
+    toast.error(errorMsg, {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
   let component = "";
-  const { logOut, generateOtp, otpResult } = useUserAuth();
+
+  const { logOut } = useUserAuth();
 
   const handleLogout = async () => {
     try {
@@ -92,9 +126,33 @@ const Manuscript = () => {
     getAuthUser();
   }, [userc, loading]);
 
-  const handleGenerateOtp = () => {
-    generateOtp(3);
+  const resetGuestPassword = async () => {
+    //userguestmanuscript@gmail.com
+    try {
+      await sendPasswordResetEmail(auth, "userguestmanuscript@gmail.com").then(
+        () => {
+          notifySuccess();
+        }
+      );
+    } catch (error) {
+      notifyError();
+      switch (error.code) {
+        case "auth/wrong-password":
+          setErrorMsg("Incorrect Password");
+          break;
+        case "auth/user-not-found":
+          setErrorMsg("User not found");
+          break;
+        case "auth/network-request-failed":
+          setErrorMsg("Network connection failed.");
+          break;
+        default:
+          setErrorMsg("Error found. Try again later.");
+          break;
+      }
+    }
   };
+
   return (
     <IconContext.Provider
       value={{
@@ -104,8 +162,26 @@ const Manuscript = () => {
       }}
     >
       <p>Currenly Signed in as: {role} </p>
-      <button onClick={handleGenerateOtp}>Generate OTP </button>
-      <p>Otp is: {otpResult}</p>
+      <button
+        onClick={() => {
+          resetGuestPassword();
+        }}
+      >
+        Reset Guest Password
+      </button>
+      <div>
+        <ToastContainer
+          position="top-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
+      </div>
       <Container fluid="md" className="manuscript">
         <Row>
           <Col className="d-flex justify-content-end align-items-center">
@@ -170,7 +246,10 @@ const Manuscript = () => {
             )}
             <Button className="settings-btns">Import Masterlist</Button>
             <Button className="settings-btns">Import Export Masterlist</Button>
-            <Button className="settings-btns" onClick={() => setShowModal(true)}>
+            <Button
+              className="settings-btns"
+              onClick={() => setShowModal(true)}
+            >
               Add Thesis
               {showModal && <Add_Modal />}
             </Button>
@@ -216,9 +295,6 @@ const Manuscript = () => {
               <h2>Empty Data</h2>
               <p>The manuscript list has no data to display</p>
             </div>
-            {/* <table className="table-empty d-flex flex-column justify-content-center align-items-center"> */}
-
-            {/* </table> */}
           </Col>
         </Row>
       </Container>

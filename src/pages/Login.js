@@ -15,15 +15,25 @@ const Login = ({ setIsAuth }) => {
   const { logIn } = useUserAuth();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+  const [success, setSuccess] = useState("");
 
+  const timeout = () => {
+    navigate("/manuscript");
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     try {
-      await logIn(email, password);
-      navigate("/manuscript");
+      if (email !== "userguestmanuscript@gmail.com") {
+        await logIn(email, password);
+        setSuccess("Success! Redirecting...");
+        setTimeout(timeout, 2000);
+      } else {
+        setError("You can't use this email address");
+      }
     } catch (err) {
       //Error Validation
+      console.log("this is the error: " + err);
       switch (err.code) {
         case "auth/wrong-password":
           setError("Incorrect Password");
@@ -56,6 +66,7 @@ const Login = ({ setIsAuth }) => {
               <p className="sub_title mb-3">
                 Hello there! Log in to continue and get started
               </p>
+              {success && <Alert variant="success">{success}</Alert>}
               {error && <Alert variant="danger">{error}</Alert>}
               <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
