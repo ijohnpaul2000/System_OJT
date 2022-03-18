@@ -6,9 +6,11 @@ import thesisService from "../services/thesis.service";
 import { CSVLink, CSVDownload } from "react-csv";
 import Options from "./Options";
 import { render } from "@testing-library/react";
+import Edit_Modal from "./Edit_Modal";
 
 const ManusList = ({ getThesisId }) => {
   const [thesisData, setThesisData] = useState([]);
+  const [showModal, setShowModal] = useState(false);
 
   //Rendering
   useEffect(() => {
@@ -25,6 +27,11 @@ const ManusList = ({ getThesisId }) => {
   const deleteHandler = async (id) => {
     await thesisService.deleteThesis(id);
   };
+
+  const openUpdateModal = (id) => {
+    setShowModal(true);
+    //getThesisId(id);
+  }
 
   return (
     <>

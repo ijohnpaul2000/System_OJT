@@ -6,8 +6,6 @@ import {
   Col,
   Button,
   Form,
-  InputGroup,
-  FormGroup,
 } from "react-bootstrap";
 import {
   doc,
@@ -32,14 +30,8 @@ const Add_Modal = () => {
   const [abstract, setAbstract] = useState("");
 
   const [member_a, setMember_a] = useState("");
-  // const [member_a, setMember_a] = useState("");
-  // const [member_c, setMember_c] = useState("");
-  // const [member_d, setMember_d] = useState("");
 
   const [panel_a, setPanel_a] = useState("");
-  // const [panel_b, setPanel_b] = useState("");
-  // const [panel_c, setPanel_c] = useState("");
-  // const [panel_d, setPanel_d] = useState("");
 
   const [page, setPage] = useState("");
   const [course, setCourse] = useState("Information Technology");
