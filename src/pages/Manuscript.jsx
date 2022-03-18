@@ -8,8 +8,8 @@ import {
   Button,
   Dropdown,
   DropdownButton,
+  Table,
 } from "react-bootstrap";
-import { Alert, Toast } from "react-bootstrap";
 import { FaCog, FaSearch } from "react-icons/fa";
 import { IconContext } from "react-icons";
 import {
@@ -31,9 +31,13 @@ import logo from "../assets/folder_logo.png";
 import Add_Modal from "../components/Add_Modal";
 import ManusList from "../components/ManusList";
 import { ToastContainer, toast } from "react-toastify";
+import { CSVLink, CSVDownload } from "react-csv";
 import "react-toastify/dist/ReactToastify.css";
+import Options from "../components/Options";
+import thesisService from "../services/thesis.service";
+import { BsFillPencilFill, BsFillTrashFill } from "react-icons/bs";
 
-const Manuscript = () => {
+const Manuscript = ({ getThesisId }) => {
   //Use States
   const [userc, loading, error] = useAuthState(auth);
   const [firstName, setFirstName] = useState("");
@@ -49,6 +53,8 @@ const Manuscript = () => {
   const [show, setShow] = useState(false);
   const [errorMsg, setErrorMsg] = useState();
 
+  // State CSVLink
+  const [thesisData, setThesisData] = useState([]);
   const notifySuccess = () =>
     toast.success("Success! Check the guest's email address.", {
       position: "top-center",
@@ -130,11 +136,9 @@ const Manuscript = () => {
   const resetGuestPassword = async () => {
     //userguestmanuscript@gmail.com
     try {
-      await sendPasswordResetEmail(auth, "userguestmanuscript@gmail.com").then(
-        () => {
-          notifySuccess();
-        }
-      );
+      await sendPasswordResetEmail(auth, "ralejom321@snece.com").then(() => {
+        notifySuccess();
+      });
     } catch (error) {
       notifyError();
       switch (error.code) {
@@ -153,6 +157,21 @@ const Manuscript = () => {
       }
     }
   };
+  //Rendering
+  useEffect(() => {
+    const getThesis = async () => {
+      const data = await thesisService.getAllThesis();
+      console.log(data.docs);
+      setThesisData(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      console.log(thesisData);
+    };
+    getThesis();
+  }, []);
+
+  //Delete handler
+  const deleteHandler = async (id) => {
+    await thesisService.deleteThesis(id);
+  };
 
   return (
     <IconContext.Provider
@@ -163,13 +182,7 @@ const Manuscript = () => {
       }}
     >
       <p>Currenly Signed in as: {role} </p>
-      <button
-        onClick={() => {
-          resetGuestPassword();
-        }}
-      >
-        Reset Guest Password
-      </button>
+
       <div>
         <ToastContainer
           position="top-center"
@@ -188,7 +201,9 @@ const Manuscript = () => {
           <Col className="d-flex justify-content-end align-items-center">
             <DropdownButton id="dropdown-basic-button" title="Settings">
               <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
-              <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+              <Dropdown.Item onClick={resetGuestPassword}>
+                Reset Guest Password
+              </Dropdown.Item>
               <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
             </DropdownButton>
           </Col>
@@ -240,21 +255,24 @@ const Manuscript = () => {
             align-items-start
             "
           >
-            {role === "Admin" ? (
-              <Button className="settings-btns">Import Abstract</Button>
-            ) : (
-              ""
-            )}
-            <Button className="settings-btns">Import Masterlist</Button>
+            {" "}
+            <CSVLink
+              data={thesisData}
+              className="export d-flex justify-content-center settings-btns align-items-center"
+            >
+              Export Masterlist
+            </CSVLink>
             <Button className="settings-btns">Import Export Masterlist</Button>
             <Button
               className="settings-btns"
-              onClick={() => setShowModal(true)}
+              onClick={() => {
+                setShowModal(true);
+                console.log("clicked");
+              }}
             >
               Add Thesis
               {showModal && <Add_Modal />}
             </Button>
-
             <div className="dropdown-container">
               <Dropdown>
                 <Dropdown.Toggle className="my-dropdown">
@@ -291,12 +309,58 @@ const Manuscript = () => {
 
         <Row>
           <Col className="d-flex flex-column justify-content-center align-items-center">
-            {/* <div className="table-container d-flex flex-column justify-content-center align-items-center">
-              <img src={logo} alt="" className="img-empty" />
-              <h2>Empty Data</h2>
-              <p>The manuscript list has no data to display</p>
-            </div> */}
-            <ManusList />
+            <Table responsive striped bordered hover>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Title</th>
+                  <th>Members</th>
+                  <th>Adviser</th>
+                  <th>Course</th>
+                  <th>Pages</th>
+                </tr>
+              </thead>
+              <tbody>
+                {thesisData.map((doc, index) => {
+                  return (
+                    <tr key={doc.id}>
+                      <td>{index + 1}</td>
+                      <td>{doc.title}</td>
+                      <td>
+                        {doc.members[0]}, {doc?.members[1]}
+                      </td>
+                      <td>{doc.adviser}</td>
+                      <td>{doc.course}</td>
+                      <td>{doc.pages}</td>
+                      <td className="m-1 text-center">
+                        <Button
+                          className="mb-1"
+                          variant="secondary"
+                          onClick={(e) => getThesisId(doc.id)}
+                        >
+                          <IconContext.Provider value={{ color: "#fff" }}>
+                            <div>
+                              <BsFillPencilFill />
+                            </div>
+                          </IconContext.Provider>
+                        </Button>
+                        <Button
+                          className="mb-1"
+                          variant="danger"
+                          onClick={(e) => deleteHandler(doc.id)}
+                        >
+                          <IconContext.Provider value={{ color: "#fff" }}>
+                            <div>
+                              <BsFillTrashFill />
+                            </div>
+                          </IconContext.Provider>
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
           </Col>
         </Row>
       </Container>

@@ -13,7 +13,14 @@
     transform: scale(1.1);
   }
 }
-
+.export {
+  font-family: var(--font-family-);
+  font-size: 1rem;
+  text-decoration: none;
+  &:hover {
+    color: var(--accent-color1);
+  }
+}
 .manuscript-text {
   font-family: var(--font-family-);
   font-size: 1.2rem;
