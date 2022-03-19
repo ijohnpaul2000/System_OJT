@@ -43,7 +43,17 @@ const Edit_Modal = ({ modalToggle }) => {
 
   const handleUpdateForm = (event) => {
     event.preventDefault();
-    updateThesis();
+    // const form = event.currentTarget;
+
+    // if (form.checkValidity() === false) {
+    //   console.log("Inputs invalid");
+    //   setValidated(true);
+    //   return;
+    // }
+
+    updateThesis();    
+    // resetForm();
+    // setValidated(false);
   };
 
   const updateHandler = async () => {
@@ -53,7 +63,10 @@ const Edit_Modal = ({ modalToggle }) => {
 
         setTitle(docSnap.data().title);
         setAdviser(docSnap.data().adviser);
-        setAbstract(docSnap.data().abstract);        
+        setAbstract(docSnap.data().abstract);
+        setMember_a(docSnap.data().members);
+        setPanel_a(docSnap.data().panels)
+                
     } catch (error) {
         console.log(error.message);    
     }
@@ -67,12 +80,46 @@ const Edit_Modal = ({ modalToggle }) => {
 
   const updateThesis = async () => {
     const updatedThesis = {
-      title,
-      adviser,
-      abstract,
+      title: title,
+      adviser: adviser,
+      abstract: abstract,
     };
 
     await thesisService.updateThesis(modalToggle, updatedThesis);
+
+      //This will split the data inside the text area
+      const res_member = member_a.trim().split(",");
+      const res_panel = panel_a.trim().split(",");
+
+      res_member.forEach(async (element) => {
+        const thesisMembers = doc(db, "thesisContent", modalToggle);
+
+        // Atomically add a new region to the "members" array field.
+        await updateDoc(thesisMembers, {
+          members: arrayUnion(element),
+        })
+          .then(() => {
+            console.log("Members Added Successfully");
+
+            res_panel.forEach(async (element) => {
+              const thesisMembers = doc(db, "thesisContent", modalToggle);
+
+              // Atomically add a new region to the "panels" array field.
+              await updateDoc(thesisMembers, {
+                panels: arrayUnion(element),
+              })
+                .then(() => {
+                  console.log("Panels Added Successfully");
+                })
+                .catch((error) => {
+                  console.log(error.message);
+                });
+            });
+          })
+          .catch((error) => {
+            console.log(error.message);
+          });
+      });
   };
 
   return ReactDom.createPortal(
@@ -151,6 +198,7 @@ const Edit_Modal = ({ modalToggle }) => {
                     onChange={(e) => setMember_a(e.target.value)}
                     placeholder="Proponents"
                     rows={3}
+                    value={member_a}
                     required
                   />
                   <Form.Text className="text-muted">
@@ -169,6 +217,7 @@ const Edit_Modal = ({ modalToggle }) => {
                     onChange={(e) => setPanel_a(e.target.value)}
                     placeholder="Panelists"
                     rows={3}
+                    value={panel_a}
                     required
                   />
                   <Form.Text className="text-muted">
@@ -206,7 +255,7 @@ const Edit_Modal = ({ modalToggle }) => {
                 </Form.Select>
               </Form.Group>
             </Row>
-            <Button type="Submit">Add Content</Button>
+            <Button type="Submit">Update Details</Button>
           </Form>
         </Modal.Body>
       </Modal>

@@ -64,8 +64,8 @@ const Add_Modal = () => {
     setDoc(newThesisRef, data)
       .then(() => {
         //This will split the data inside the text area
-        const res_member = member_a.trim().split("\n");
-        const res_panel = panel_a.trim().split("\n");
+        const res_member = member_a.trim().split(",");
+        const res_panel = panel_a.trim().split(",");
 
         res_member.forEach(async (element) => {
           const thesisMembers = doc(db, "thesisContent", newThesisRef.id);
@@ -194,7 +194,7 @@ const Add_Modal = () => {
                     required
                   />
                   <Form.Text className="text-muted">
-                    Names must be entered in separate new line.
+                    Names must be separated by a comma. (e.g. Member A, Member B)
                   </Form.Text>
                   <Form.Control.Feedback type="invalid">
                     Please enter atleast 1 member.
@@ -212,7 +212,7 @@ const Add_Modal = () => {
                     required
                   />
                   <Form.Text className="text-muted">
-                    Names must be entered in separate new line.
+                    Names must be separated by a comma. (e.g. Panel A, Panel B)
                   </Form.Text>
                   <Form.Control.Feedback type="invalid">
                     Please enter atleast 1 panel.
@@ -246,7 +246,7 @@ const Add_Modal = () => {
                 </Form.Select>
               </Form.Group>
             </Row>
-            <Button type="Submit">Add Content</Button>
+            <Button type="Submit">Add Details</Button>
           </Form>
         </Modal.Body>
       </Modal>

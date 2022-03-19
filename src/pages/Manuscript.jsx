@@ -36,7 +36,7 @@ import Options from "../components/Options";
 import thesisService from "../services/thesis.service";
 import { BsFillPencilFill, BsFillTrashFill } from "react-icons/bs";
 import Edit_Modal from "../components/Edit_Modal";
-import BootstrapTable from "react-bootstrap-table-next";
+// import BootstrapTable from "react-bootstrap-table-next";
 
 const Manuscript = ({ getThesisId }) => {
   //Use States
@@ -383,12 +383,10 @@ const Manuscript = ({ getThesisId }) => {
                       </td>
                     </tr>
                   );
-                  {
-                    showModalEdit && <Edit_Modal modalToggle={doc.id} />;
-                  }
                 })}
               </tbody>
             </Table>
+            {showModalEdit && <Edit_Modal modalToggle={thesisId} />}
           </Col>
         </Row>
       </Container>
