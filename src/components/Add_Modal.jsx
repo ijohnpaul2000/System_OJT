@@ -38,7 +38,10 @@ const Add_Modal = () => {
 
   let navigate = useNavigate();
 
-  const handleClose = () => setShow(!show);
+  const handleClose = () => {
+    setShow(!show);
+    window.location.reload();
+  };
 
   //For reset form
   const resetForm = () => {
@@ -114,23 +117,6 @@ const Add_Modal = () => {
     resetForm();
     setValidated(false);
   };
-
-  // const listMembers = () => {
-
-  //   const res = abstract.trim().split("\n")
-
-  //   //console.log(res);
-
-  //   res.forEach( async (element) => {
-  //     const thesisMembers = doc(db, "thesisContent", "V4XFX2NWwQF7sDSpQCc5");
-
-  //     // Atomically add a new region to the "members" array field.
-  //     await updateDoc(thesisMembers, {
-  //       members: arrayUnion(element)
-  //     });
-
-  //   });
-  // }
 
   return ReactDom.createPortal(
     <div>

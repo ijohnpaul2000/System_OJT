@@ -29,13 +29,14 @@ import {
 import { db, auth } from "../firebase";
 import logo from "../assets/folder_logo.png";
 import Add_Modal from "../components/Add_Modal";
-import ManusList from "../components/ManusList";
 import { ToastContainer, toast } from "react-toastify";
 import { CSVLink, CSVDownload } from "react-csv";
 import "react-toastify/dist/ReactToastify.css";
 import Options from "../components/Options";
 import thesisService from "../services/thesis.service";
 import { BsFillPencilFill, BsFillTrashFill } from "react-icons/bs";
+import Edit_Modal from "../components/Edit_Modal";
+import BootstrapTable from "react-bootstrap-table-next";
 
 const Manuscript = ({ getThesisId }) => {
   //Use States
@@ -45,6 +46,7 @@ const Manuscript = ({ getThesisId }) => {
 
   const [role, setRole] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [showModalEdit, setShowModalEdit] = useState(false);
   const navigate = useNavigate();
 
   const [first, setfirst] = useState("");
@@ -55,6 +57,10 @@ const Manuscript = ({ getThesisId }) => {
 
   // State CSVLink
   const [thesisData, setThesisData] = useState([]);
+
+  // Get Thesis ID
+  const [thesisId, setThesisId] = useState("");
+
   const notifySuccess = () =>
     toast.success("Success! Check the guest's email address.", {
       position: "top-center",
@@ -164,6 +170,21 @@ const Manuscript = ({ getThesisId }) => {
       console.log(data.docs);
       setThesisData(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
       console.log(thesisData);
+
+      // const columns = [
+      //   {
+      //     dataField: "id",
+      //     text: "Product ID",
+      //   },
+      //   {
+      //     dataField: "name",
+      //     text: "Product Name",
+      //   },
+      //   {
+      //     dataField: "price",
+      //     text: "Product Price",
+      //   },
+      // ];
     };
     getThesis();
   }, []);
@@ -173,6 +194,10 @@ const Manuscript = ({ getThesisId }) => {
     await thesisService.deleteThesis(id);
   };
 
+  const openUpdateModal = (id) => {
+    setThesisId(id);
+    setShowModalEdit(true);
+  };
   return (
     <IconContext.Provider
       value={{
@@ -336,7 +361,7 @@ const Manuscript = ({ getThesisId }) => {
                         <Button
                           className="mb-1"
                           variant="secondary"
-                          onClick={(e) => getThesisId(doc.id)}
+                          onClick={(e) => openUpdateModal(doc.id)}
                         >
                           <IconContext.Provider value={{ color: "#fff" }}>
                             <div>
@@ -358,6 +383,9 @@ const Manuscript = ({ getThesisId }) => {
                       </td>
                     </tr>
                   );
+                  {
+                    showModalEdit && <Edit_Modal modalToggle={doc.id} />;
+                  }
                 })}
               </tbody>
             </Table>

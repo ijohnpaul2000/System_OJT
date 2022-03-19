@@ -63,7 +63,7 @@ const ManusList = ({ getThesisId }) => {
                   <Button
                     className="mb-1"
                     variant="secondary"
-                    onClick={(e) => getThesisId(doc.id)}
+                    onClick={(e) => openUpdateModal(doc.id)}
                   >
                     <IconContext.Provider value={{ color: "#fff" }}>
                       <div>
