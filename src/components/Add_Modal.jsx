@@ -17,6 +17,8 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import thesisService from "../services/thesis.service";
 
 const Add_Modal = () => {
   //Use States for Modal
@@ -28,15 +30,25 @@ const Add_Modal = () => {
   const [title, setTitle] = useState("");
   const [adviser, setAdviser] = useState("");
   const [abstract, setAbstract] = useState("");
-
   const [member_a, setMember_a] = useState("");
-
   const [panel_a, setPanel_a] = useState("");
-
   const [page, setPage] = useState("");
   const [course, setCourse] = useState("Information Technology");
 
   let navigate = useNavigate();
+
+  //Toast Controller
+  const notifySuccess = () =>
+    toast.success("Success! New Data was added", {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      onClose: () => handleClose()
+    });
 
   const handleClose = () => {
     setShow(!show);
@@ -49,11 +61,13 @@ const Add_Modal = () => {
   };
 
   //Add Data to Firestore
-  const addThesisData = () => {
+  const addThesisData = async () => {
     const data = {
       title: title,
       adviser: adviser,
       abstract: abstract,
+      members: member_a,
+      panels: panel_a,
       pages: page,
       course: course,
     };
@@ -61,45 +75,8 @@ const Add_Modal = () => {
 
     data.thesisId = newThesisRef.id;
 
-    setDoc(newThesisRef, data)
-      .then(() => {
-        //This will split the data inside the text area
-        const res_member = member_a.trim().split(",");
-        const res_panel = panel_a.trim().split(",");
+    await thesisService.addThesis(data);
 
-        res_member.forEach(async (element) => {
-          const thesisMembers = doc(db, "thesisContent", newThesisRef.id);
-
-          // Atomically add a new region to the "members" array field.
-          await updateDoc(thesisMembers, {
-            members: arrayUnion(element),
-          })
-            .then(() => {
-              console.log("Members Added Successfully");
-
-              res_panel.forEach(async (element) => {
-                const thesisMembers = doc(db, "thesisContent", newThesisRef.id);
-
-                // Atomically add a new region to the "panels" array field.
-                await updateDoc(thesisMembers, {
-                  panels: arrayUnion(element),
-                })
-                  .then(() => {
-                    console.log("Panels Added Successfully");
-                  })
-                  .catch((error) => {
-                    console.log(error.message);
-                  });
-              });
-            })
-            .catch((error) => {
-              console.log(error.message);
-            });
-        });
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
   };
 
   //Submit Function
@@ -116,10 +93,24 @@ const Add_Modal = () => {
     addThesisData();
     resetForm();
     setValidated(false);
+    notifySuccess();
   };
 
   return ReactDom.createPortal(
     <div>
+      <div>
+        <ToastContainer
+          position="top-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
+      </div>
       <Modal
         show={show}
         keyboard={false}
@@ -190,11 +181,12 @@ const Add_Modal = () => {
                     as="textarea"
                     onChange={(e) => setMember_a(e.target.value)}
                     placeholder="Proponents"
-                    rows={3}
+                    rows={2}
                     required
                   />
                   <Form.Text className="text-muted">
-                    Names must be separated by a comma. (e.g. Member A, Member B)
+                    Names must be separated by a comma. (e.g. Member A, Member
+                    B)
                   </Form.Text>
                   <Form.Control.Feedback type="invalid">
                     Please enter atleast 1 member.
@@ -208,7 +200,7 @@ const Add_Modal = () => {
                     as="textarea"
                     onChange={(e) => setPanel_a(e.target.value)}
                     placeholder="Panelists"
-                    rows={3}
+                    rows={2}
                     required
                   />
                   <Form.Text className="text-muted">

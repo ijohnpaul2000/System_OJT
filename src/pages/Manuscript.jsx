@@ -36,6 +36,7 @@ import Options from "../components/Options";
 import thesisService from "../services/thesis.service";
 import { BsFillPencilFill, BsFillTrashFill } from "react-icons/bs";
 import Edit_Modal from "../components/Edit_Modal";
+import Delete_Modal from "../components/Delete_Modal";
 // import BootstrapTable from "react-bootstrap-table-next";
 
 const Manuscript = ({ getThesisId }) => {
@@ -47,6 +48,7 @@ const Manuscript = ({ getThesisId }) => {
   const [role, setRole] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [showModalEdit, setShowModalEdit] = useState(false);
+  const [showModalDelete, setShowModalDelete] = useState(false);
   const navigate = useNavigate();
 
   const [first, setfirst] = useState("");
@@ -60,6 +62,9 @@ const Manuscript = ({ getThesisId }) => {
 
   // Get Thesis ID
   const [thesisId, setThesisId] = useState("");
+
+  //Get Thesis title
+  const [title, setTitle] = useState("");
 
   const notifySuccess = () =>
     toast.success("Success! Check the guest's email address.", {
@@ -170,34 +175,21 @@ const Manuscript = ({ getThesisId }) => {
       console.log(data.docs);
       setThesisData(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
       console.log(thesisData);
-
-      // const columns = [
-      //   {
-      //     dataField: "id",
-      //     text: "Product ID",
-      //   },
-      //   {
-      //     dataField: "name",
-      //     text: "Product Name",
-      //   },
-      //   {
-      //     dataField: "price",
-      //     text: "Product Price",
-      //   },
-      // ];
     };
     getThesis();
   }, []);
-
-  //Delete handler
-  const deleteHandler = async (id) => {
-    await thesisService.deleteThesis(id);
-  };
 
   const openUpdateModal = (id) => {
     setThesisId(id);
     setShowModalEdit(true);
   };
+
+  const openDeleteModal = (id, title) => {
+    setThesisId(id);
+    setTitle(title);
+    setShowModalDelete(true);
+  };
+
   return (
     <IconContext.Provider
       value={{
@@ -351,9 +343,7 @@ const Manuscript = ({ getThesisId }) => {
                     <tr key={doc.id}>
                       <td>{index + 1}</td>
                       <td>{doc.title}</td>
-                      <td>
-                        {doc.members[0]}, {doc?.members[1]}
-                      </td>
+                      <td>{doc.members}</td>
                       <td>{doc.adviser}</td>
                       <td>{doc.course}</td>
                       <td>{doc.pages}</td>
@@ -372,7 +362,8 @@ const Manuscript = ({ getThesisId }) => {
                         <Button
                           className="mb-1"
                           variant="danger"
-                          onClick={(e) => deleteHandler(doc.id)}
+                          //onClick={(e) => deleteHandler(doc.id)}
+                          onClick={(e) => openDeleteModal(doc.id, doc.title)}
                         >
                           <IconContext.Provider value={{ color: "#fff" }}>
                             <div>
@@ -387,6 +378,7 @@ const Manuscript = ({ getThesisId }) => {
               </tbody>
             </Table>
             {showModalEdit && <Edit_Modal modalToggle={thesisId} />}
+            {showModalDelete && <Delete_Modal modalToggle={thesisId} thesisTitle={title} />}
           </Col>
         </Row>
       </Container>
