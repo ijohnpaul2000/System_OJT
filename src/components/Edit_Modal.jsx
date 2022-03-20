@@ -8,8 +8,10 @@ import {
   updateDoc,
   arrayUnion,
   arrayRemove,
+  deleteField,
 } from "firebase/firestore";
 import { db } from "../firebase";
+import { ToastContainer, toast } from "react-toastify";
 import thesisService from "../services/thesis.service";
 
 const Edit_Modal = ({ modalToggle }) => {
@@ -32,51 +34,98 @@ const Edit_Modal = ({ modalToggle }) => {
 
   const [id, setId] = useState(modalToggle);
 
+  //Toast Controller
+  const notifySuccess = () =>
+  toast.success("Success! Data was updated", {
+    position: "top-center",
+    autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    onClose: () => handleClose()
+  });
+
+  //Magic Rerenderer AHAHAHAAA
   const handleClose = () => {
     setShow(!show);
+    window.location.reload();
   };
 
   //For reset form
   const resetForm = () => {
-    document.getElementById("addFormId").reset();
-  };
-
-  const handleUpdateForm = (event) => {
-    event.preventDefault();
-    updateThesis();
+    document.getElementById("updateFormId").reset();
   };
 
   const updateHandler = async () => {
     try {
-        const docSnap = await thesisService.getThesis(modalToggle);
-        console.log(docSnap);
+      const docSnap = await thesisService.getThesis(modalToggle);
+      console.log(docSnap);
 
-        setTitle(docSnap.data().title);
-        setAdviser(docSnap.data().adviser);
-        setAbstract(docSnap.data().abstract);        
+      setTitle(docSnap.data().title);
+      setAdviser(docSnap.data().adviser);
+      setAbstract(docSnap.data().abstract);
+      setMember_a(docSnap.data().members);
+      setPanel_a(docSnap.data().panels);
+      setPage(docSnap.data().pages);
+      setCourse(docSnap.data().course);
     } catch (error) {
-        console.log(error.message);    
+      console.log(error.message);
     }
-  }
+  };
 
   useEffect(() => {
-
     updateHandler();
-
   }, [modalToggle]);
 
+  //Update Data from Firebase
   const updateThesis = async () => {
     const updatedThesis = {
-      title,
-      adviser,
-      abstract,
+      title: title,
+      adviser: adviser,
+      abstract: abstract,
+      members: member_a,
+      panels: panel_a,
+      pages: page,
+      course: course,
     };
 
     await thesisService.updateThesis(modalToggle, updatedThesis);
+    notifySuccess();
+  };
+
+  //Submit changes
+  const handleUpdateForm = (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+
+    if (form.checkValidity() === false) {
+      console.log("Inputs invalid");
+      setValidated(true);
+      return;
+    }
+
+    updateThesis();
+    resetForm();
+    setValidated(false);
   };
 
   return ReactDom.createPortal(
     <div>
+      <div>
+        <ToastContainer
+          position="top-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
+      </div>
       <Modal
         show={show}
         keyboard={false}
@@ -94,7 +143,7 @@ const Edit_Modal = ({ modalToggle }) => {
           <Form
             noValidate
             validated={validated}
-            id="addFormId"
+            id="updateFormId"
             onSubmit={handleUpdateForm}
           >
             <Row className="mb-3">
@@ -150,7 +199,8 @@ const Edit_Modal = ({ modalToggle }) => {
                     as="textarea"
                     onChange={(e) => setMember_a(e.target.value)}
                     placeholder="Proponents"
-                    rows={3}
+                    rows={2}
+                    value={member_a}
                     required
                   />
                   <Form.Text className="text-muted">
@@ -168,7 +218,8 @@ const Edit_Modal = ({ modalToggle }) => {
                     as="textarea"
                     onChange={(e) => setPanel_a(e.target.value)}
                     placeholder="Panelists"
-                    rows={3}
+                    rows={2}
+                    value={panel_a}
                     required
                   />
                   <Form.Text className="text-muted">
@@ -188,6 +239,7 @@ const Edit_Modal = ({ modalToggle }) => {
                   type="number"
                   onChange={(e) => setPage(e.target.value)}
                   placeholder="No. of Pages"
+                  value={page}
                   required
                 />
                 <Form.Control.Feedback type="invalid">
@@ -206,7 +258,7 @@ const Edit_Modal = ({ modalToggle }) => {
                 </Form.Select>
               </Form.Group>
             </Row>
-            <Button type="Submit">Add Content</Button>
+            <Button type="Submit">Update Details</Button>
           </Form>
         </Modal.Body>
       </Modal>
