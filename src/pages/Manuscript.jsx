@@ -34,10 +34,13 @@ import { CSVLink, CSVDownload } from "react-csv";
 import "react-toastify/dist/ReactToastify.css";
 import Options from "../components/Options";
 import thesisService from "../services/thesis.service";
-import { BsFillPencilFill, BsFillTrashFill } from "react-icons/bs";
+import { BsFillPencilFill, BsFillTrashFill, BsFillEyeFill } from "react-icons/bs";
 import Edit_Modal from "../components/Edit_Modal";
 import Delete_Modal from "../components/Delete_Modal";
-// import BootstrapTable from "react-bootstrap-table-next";
+import View_Modal from "../components/View_Modal";
+
+//Material UI Imports
+import { DataGrid } from "@mui/x-data-grid";
 
 const Manuscript = ({ getThesisId }) => {
   //Use States
@@ -49,6 +52,7 @@ const Manuscript = ({ getThesisId }) => {
   const [showModal, setShowModal] = useState(false);
   const [showModalEdit, setShowModalEdit] = useState(false);
   const [showModalDelete, setShowModalDelete] = useState(false);
+  const [showModalView, setShowModalView] = useState(false);
   const navigate = useNavigate();
 
   const [first, setfirst] = useState("");
@@ -63,8 +67,60 @@ const Manuscript = ({ getThesisId }) => {
   // Get Thesis ID
   const [thesisId, setThesisId] = useState("");
 
+  //Get Single Thesis Record
+  const [singleThesis, setsingleThesis] = useState([]);
+
   //Get Thesis title
   const [title, setTitle] = useState("");
+
+  const columns = [
+    { field: "title", headerName: "Title", width: 200, flex:2 },
+    { field: "members", headerName: "Members", width: 200, flex:2 },
+    { field: "adviser", headerName: "Adviser", width: 130, flex:2 },
+    { field: "course", headerName: "Course", width: 180, flex:2 },
+    {
+      field: "pages",
+      headerName: "Pages",
+      headerAlign: "left",
+      type: "number",
+      width: 40, 
+      flex:1
+    },
+    {
+      field: "action",
+      headerName: "Action",
+      width: 20,
+      flex: 1,   
+      renderCell: (cellValues) => {
+        return (
+          <Button
+            className="center-btn"
+            variant="primary"
+            onClick={(event) => {
+              console.log(cellValues);
+              console.log(cellValues.row.thesisId);
+              openViewInfo(
+                cellValues.row.thesisId, 
+                cellValues.row.title, 
+                cellValues.row.abstract,
+                cellValues.row.adviser,
+                cellValues.row.members,
+                cellValues.row.panels,
+                cellValues.row.pages,
+                cellValues.row.course
+                );
+            }}
+          >
+            <IconContext.Provider value={{ color: "#fff" }}>
+              <div>
+                <BsFillEyeFill />
+              </div>
+            </IconContext.Provider>
+          </Button>
+        );
+      }
+    }
+  ];
 
   const notifySuccess = () =>
     toast.success("Success! Check the guest's email address.", {
@@ -188,6 +244,17 @@ const Manuscript = ({ getThesisId }) => {
     setThesisId(id);
     setTitle(title);
     setShowModalDelete(true);
+  };
+
+  //Open View Info Modal
+  const openViewInfo = (id, title, abstract, adviser, members, panels, pages, course ) => {
+    setThesisId(id);
+
+    const data = {
+      id, title, abstract, adviser, members, panels, pages, course
+    }
+    setsingleThesis(data);
+    setShowModalView(true);
   };
 
   return (
@@ -326,7 +393,15 @@ const Manuscript = ({ getThesisId }) => {
 
         <Row>
           <Col className="d-flex flex-column justify-content-center align-items-center">
-            <Table responsive striped bordered hover>
+            <div style={{ height: 400, width: "100%" }}>
+              <DataGrid
+                rows={thesisData}
+                columns={columns}
+                pageSize={5}
+                rowsPerPageOptions={[5]}
+              />
+            </div>
+            {/* <Table responsive striped bordered hover>
               <thead>
                 <tr>
                   <th>#</th>
@@ -376,9 +451,10 @@ const Manuscript = ({ getThesisId }) => {
                   );
                 })}
               </tbody>
-            </Table>
+            </Table> */}
             {showModalEdit && <Edit_Modal modalToggle={thesisId} />}
             {showModalDelete && <Delete_Modal modalToggle={thesisId} thesisTitle={title} />}
+            {showModalView && <View_Modal modalToggle={thesisId} singleThesis={singleThesis} />}
           </Col>
         </Row>
       </Container>
