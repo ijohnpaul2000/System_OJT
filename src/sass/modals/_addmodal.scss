@@ -1,0 +1,13 @@
+.AddModal {
+  width: 100rem;
+  max-width: none !important;
+  @media screen and (max-width: 576px) {
+    max-width: 100% !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+.modal-header {
+  border-bottom: 0 none;
+}

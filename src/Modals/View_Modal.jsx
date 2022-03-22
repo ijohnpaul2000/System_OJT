@@ -5,7 +5,7 @@ import { Modal, Button } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import thesisService from "../services/thesis.service";
 
-const View_Modal = ({modalToggle, singleThesis}) => {
+const View_Modal = ({ modalToggle, singleThesis }) => {
   const [show, setShow] = useState(true);
 
   //Magic Rerenderer AHAHAHAAA
@@ -18,17 +18,14 @@ const View_Modal = ({modalToggle, singleThesis}) => {
   const handleDelete = async () => {
     await thesisService.deleteThesis(modalToggle);
     handleClose();
-  }
+  };
 
   //Update, bahala ka na dito boss
-  const handleUpdate = () => {
-
-  }
+  const handleUpdate = () => {};
 
   useEffect(() => {
-    
-  }, [])
-  
+    console.log(singleThesis);
+  }, []);
 
   return (
     <Modal
@@ -40,20 +37,27 @@ const View_Modal = ({modalToggle, singleThesis}) => {
       centered
     >
       <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">{singleThesis.title}</Modal.Title>
+        <Modal.Title id="contained-modal-title-vcenter">
+          {singleThesis.title}
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        <h5>Authors :</h5>
+        <p>{singleThesis.authors}</p>
+        <h5>Panelists :</h5>
+        <p>{singleThesis.panelists}</p>
+        <h5>Section :</h5>
+        <p>{singleThesis.section}</p>
+        <h5>Abstract : </h5>
         <p>{singleThesis.abstract}</p>
-        <h4>Members:</h4>
-        <p>{singleThesis.members}</p>
-        <h4>Panels:</h4>
-        <p>{singleThesis.panels}</p>
-        <h4>Course:</h4>
-        <p>{singleThesis.course}</p>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="primary" onClick={handleUpdate}>Update</Button>
-        <Button variant="danger" onClick={handleDelete}>Delete</Button>
+        <Button variant="primary" onClick={handleUpdate}>
+          Update
+        </Button>
+        <Button variant="danger" onClick={handleDelete}>
+          Delete
+        </Button>
       </Modal.Footer>
     </Modal>
   );

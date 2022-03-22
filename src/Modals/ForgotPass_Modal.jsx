@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useMemo } from "react";
+import React, { useState } from "react";
 import {
   Button,
   Modal,
@@ -11,14 +11,12 @@ import {
 import ReactDom from "react-dom";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/forgot_pass.png";
-import { auth } from "../firebase";
 import { useUserAuth } from "../context/UserAuthContext";
 
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const Fp_Modal = () => {
-  const [show, setShow] = useState(false);
+const ForgotPass_Modal = () => {
+  const [show, setShow] = useState(true);
   const [openModal, setOpenModal] = useState(false);
 
   const [email, setEmail] = useState("");
@@ -35,8 +33,6 @@ const Fp_Modal = () => {
   const [error, setError] = useState("");
 
   const [isSuccess, setIsSuccess] = useState(false);
-
-  const notify = () => toast("Wow so easy!");
 
   const timeout = () => {
     navigate("/");
@@ -86,7 +82,10 @@ const Fp_Modal = () => {
             sm={12}
             className="d-flex flex-column justify-content-center align-items-center text-center mb-5 mt-5"
           >
-            <img src={logo} className="fp_modal-logo img-fluid w-50 h-50 " />
+            <img
+              src={logo}
+              className="ForgotPass_Modal-logo img-fluid w-50 h-50 "
+            />
             <h1 className="fp_header">Forgot Password</h1>
             <p className="fp_description">
               Don't worry! It happens. Please enter the email address associated
@@ -119,4 +118,4 @@ const Fp_Modal = () => {
   );
 };
 
-export default Fp_Modal;
+export default ForgotPass_Modal;

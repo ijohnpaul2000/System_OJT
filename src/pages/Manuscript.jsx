@@ -28,16 +28,20 @@ import {
 } from "firebase/auth";
 import { db, auth } from "../firebase";
 import logo from "../assets/folder_logo.png";
-import Add_Modal from "../components/Add_Modal";
+import Add_Modal from "../Modals/Add_Modal";
 import { ToastContainer, toast } from "react-toastify";
 import { CSVLink, CSVDownload } from "react-csv";
 import "react-toastify/dist/ReactToastify.css";
-import Options from "../components/Options";
 import thesisService from "../services/thesis.service";
-import { BsFillPencilFill, BsFillTrashFill, BsFillEyeFill } from "react-icons/bs";
-import Edit_Modal from "../components/Edit_Modal";
-import Delete_Modal from "../components/Delete_Modal";
-import View_Modal from "../components/View_Modal";
+import {
+  BsFillPencilFill,
+  BsFillTrashFill,
+  BsFillEyeFill,
+  BsTrash,
+} from "react-icons/bs";
+import Edit_Modal from "../Modals/Edit_Modal";
+import Delete_Modal from "../Modals/Delete_conf_Modal";
+import View_Modal from "../Modals/View_Modal";
 
 //Material UI Imports
 import { DataGrid } from "@mui/x-data-grid";
@@ -74,41 +78,48 @@ const Manuscript = ({ getThesisId }) => {
   const [title, setTitle] = useState("");
 
   const columns = [
-    { field: "title", headerName: "Title", width: 200, flex:2 },
-    { field: "members", headerName: "Members", width: 200, flex:2 },
-    { field: "adviser", headerName: "Adviser", width: 130, flex:2 },
-    { field: "course", headerName: "Course", width: 180, flex:2 },
+    { field: "title", headerName: "Title", width: 200, flex: 2 },
+    { field: "authors", headerName: "Authors", width: 200, flex: 2 },
+    { field: "adviser", headerName: "Adviser", width: 200, flex: 2 },
+    { field: "course", headerName: "Course", width: 180, flex: 2 },
     {
-      field: "pages",
-      headerName: "Pages",
+      field: "yearPublished",
+      headerName: "Year Published",
       headerAlign: "left",
       type: "number",
-      width: 40, 
-      flex:1
+      width: 40,
+      flex: 1,
     },
     {
       field: "action",
-      headerName: "Action",
+      headerName: "Actions",
       width: 20,
-      flex: 1,   
+      flex: 1,
+      headerAlign: "center",
       renderCell: (cellValues) => {
         return (
           <Button
             className="center-btn"
             variant="primary"
             onClick={(event) => {
-              console.log(cellValues);
-              console.log(cellValues.row.thesisId);
+              console.log("cellvalues : " + cellValues);
+              console.log("selected thesis : " + cellValues.row.thesisId);
               openViewInfo(
-                cellValues.row.thesisId, 
-                cellValues.row.title, 
-                cellValues.row.abstract,
+                cellValues.row.id,
+                cellValues.row.title,
+                cellValues.row.course,
+                cellValues.row.section,
+                cellValues.row.authors,
+                cellValues.row.panelists,
+                cellValues.row.noOfCopies,
+                cellValues.row.volumeNo,
+                cellValues.row.grades,
+                cellValues.row.keywords,
                 cellValues.row.adviser,
-                cellValues.row.members,
-                cellValues.row.panels,
-                cellValues.row.pages,
-                cellValues.row.course
-                );
+                cellValues.row.chairperson,
+                cellValues.row.dean,
+                cellValues.row.abstract
+              );
             }}
           >
             <IconContext.Provider value={{ color: "#fff" }}>
@@ -118,8 +129,8 @@ const Manuscript = ({ getThesisId }) => {
             </IconContext.Provider>
           </Button>
         );
-      }
-    }
+      },
+    },
   ];
 
   const notifySuccess = () =>
@@ -247,14 +258,42 @@ const Manuscript = ({ getThesisId }) => {
   };
 
   //Open View Info Modal
-  const openViewInfo = (id, title, abstract, adviser, members, panels, pages, course ) => {
+  const openViewInfo = (
+    id,
+    title,
+    course,
+    section,
+    authors,
+    panelists,
+    noOfCopies,
+    volumeNo,
+    grades,
+    keywords,
+    adviser,
+    chairperson,
+    dean,
+    abstract
+  ) => {
     setThesisId(id);
 
     const data = {
-      id, title, abstract, adviser, members, panels, pages, course
-    }
+      id,
+      title,
+      course,
+      section,
+      authors,
+      panelists,
+      noOfCopies,
+      volumeNo,
+      grades,
+      keywords,
+      adviser,
+      chairperson,
+      dean,
+      abstract,
+    };
     setsingleThesis(data);
-    setShowModalView(true);
+    setShowModalEdit(true);
   };
 
   return (
@@ -288,7 +327,6 @@ const Manuscript = ({ getThesisId }) => {
               <Dropdown.Item onClick={resetGuestPassword}>
                 Reset Guest Password
               </Dropdown.Item>
-              <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
             </DropdownButton>
           </Col>
         </Row>
@@ -298,32 +336,7 @@ const Manuscript = ({ getThesisId }) => {
 
         <Row>
           <Col
-            xl={4}
-            lg={12}
-            md={12}
-            className="d-flex justify-content-center align-items-center
-            mb-lg-4
-            mb-4
-            "
-          >
-            <div className="search-container d-flex justify-content-center align-items-center">
-              <div className="search d-flex justify-content-center align-items-center">
-                <input
-                  className="input-search"
-                  type="text"
-                  placeholder="Search here..."
-                />
-              </div>
-              <div className="btn-container d-flex justify-content-center align-items-center">
-                <button className="fa-search">
-                  <FaSearch />
-                </button>
-              </div>
-            </div>
-          </Col>
-
-          <Col
-            xl={8}
+            xl={12}
             lg={12}
             md={12}
             sm={12}
@@ -335,18 +348,20 @@ const Manuscript = ({ getThesisId }) => {
             mt-md-4
             mt-lg-0
             mt-xxl-0
+            mb-4
             justify-content-lg-center
-            align-items-start
+            align-items-center
             "
           >
-            {" "}
             <CSVLink
               data={thesisData}
-              className="export d-flex justify-content-center settings-btns align-items-center"
+              className="settings-btns export d-flex justify-content-center text-center settings-btns align-items-center"
             >
               Export Masterlist
             </CSVLink>
-            <Button className="settings-btns">Import Export Masterlist</Button>
+            <Button className="settings-btns text-center ">
+              Import Export Masterlist
+            </Button>
             <Button
               className="settings-btns"
               onClick={() => {
@@ -357,37 +372,6 @@ const Manuscript = ({ getThesisId }) => {
               Add Thesis
               {showModal && <Add_Modal />}
             </Button>
-            <div className="dropdown-container">
-              <Dropdown>
-                <Dropdown.Toggle className="my-dropdown">
-                  Sort By
-                </Dropdown.Toggle>
-
-                <Dropdown.Menu>
-                  <Dropdown.Item className="d-flex flex-column justify-content-center align-items-end">
-                    Last Updated
-                  </Dropdown.Item>
-                  <Dropdown.Item className="d-flex flex-column justify-content-center align-items-end">
-                    First Updated
-                  </Dropdown.Item>
-                  <Dropdown.Item className="d-flex flex-column justify-content-center align-items-end">
-                    A to Z
-                  </Dropdown.Item>
-                  <Dropdown.Item className="d-flex flex-column justify-content-center align-items-end">
-                    Z to A
-                  </Dropdown.Item>
-                  <Dropdown.Item className="d-flex flex-column justify-content-center align-items-end">
-                    Year Published
-                  </Dropdown.Item>
-                  <Dropdown.Item className="d-flex flex-column justify-content-center align-items-end">
-                    Grade
-                  </Dropdown.Item>
-                  <Dropdown.Item className="d-flex flex-column justify-content-center align-items-end">
-                    Number of Copies
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-            </div>
           </Col>
         </Row>
 
@@ -401,60 +385,15 @@ const Manuscript = ({ getThesisId }) => {
                 rowsPerPageOptions={[5]}
               />
             </div>
-            {/* <Table responsive striped bordered hover>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Title</th>
-                  <th>Members</th>
-                  <th>Adviser</th>
-                  <th>Course</th>
-                  <th>Pages</th>
-                </tr>
-              </thead>
-              <tbody>
-                {thesisData.map((doc, index) => {
-                  return (
-                    <tr key={doc.id}>
-                      <td>{index + 1}</td>
-                      <td>{doc.title}</td>
-                      <td>{doc.members}</td>
-                      <td>{doc.adviser}</td>
-                      <td>{doc.course}</td>
-                      <td>{doc.pages}</td>
-                      <td className="m-1 text-center">
-                        <Button
-                          className="mb-1"
-                          variant="secondary"
-                          onClick={(e) => openUpdateModal(doc.id)}
-                        >
-                          <IconContext.Provider value={{ color: "#fff" }}>
-                            <div>
-                              <BsFillPencilFill />
-                            </div>
-                          </IconContext.Provider>
-                        </Button>
-                        <Button
-                          className="mb-1"
-                          variant="danger"
-                          //onClick={(e) => deleteHandler(doc.id)}
-                          onClick={(e) => openDeleteModal(doc.id, doc.title)}
-                        >
-                          <IconContext.Provider value={{ color: "#fff" }}>
-                            <div>
-                              <BsFillTrashFill />
-                            </div>
-                          </IconContext.Provider>
-                        </Button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table> */}
-            {showModalEdit && <Edit_Modal modalToggle={thesisId} />}
-            {showModalDelete && <Delete_Modal modalToggle={thesisId} thesisTitle={title} />}
-            {showModalView && <View_Modal modalToggle={thesisId} singleThesis={singleThesis} />}
+            {showModalEdit && (
+              <Edit_Modal singleThesis={singleThesis} modalToggle={thesisId} />
+            )}
+            {showModalDelete && (
+              <Delete_Modal modalToggle={thesisId} thesisTitle={title} />
+            )}
+            {showModalView && (
+              <View_Modal modalToggle={thesisId} singleThesis={singleThesis} />
+            )}
           </Col>
         </Row>
       </Container>

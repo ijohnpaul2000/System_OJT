@@ -6,7 +6,7 @@ import { useUserAuth } from "../context/UserAuthContext";
 import logo from "../assets/login.png";
 import Navigationbar from "../components/NavigationBar";
 import ForgotPassword from "./Forgot_Pass";
-import Fp_Modal from "../components/Fp_Modal";
+import ForgotPass_Modal from "../Modals/ForgotPass_Modal";
 
 const Login = ({ setIsAuth }) => {
   const [email, setEmail] = useState("");
@@ -16,6 +16,11 @@ const Login = ({ setIsAuth }) => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [success, setSuccess] = useState("");
+
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   const timeout = () => {
     navigate("/manuscript");
@@ -115,10 +120,9 @@ const Login = ({ setIsAuth }) => {
             </div>
             <div className="p-4 box mt-3 text-center">
               Forgot Password?{" "}
-              <button className="reset-btn" onClick={() => setShowModal(true)}>
-                {" "}
+              <button className="reset-btn" onClick={handleShow}>
                 Reset your password.
-                {showModal && <Fp_Modal />}
+                {show && <ForgotPass_Modal />}
               </button>
             </div>
           </Col>
