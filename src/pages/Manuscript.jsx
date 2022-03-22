@@ -102,7 +102,7 @@ const Manuscript = ({ getThesisId }) => {
             className="center-btn"
             variant="primary"
             onClick={(event) => {
-              console.log("cellvalues : " + cellValues);
+              console.log(cellValues);
               console.log("selected thesis : " + cellValues.row.thesisId);
               openViewInfo(
                 cellValues.row.id,
@@ -118,7 +118,8 @@ const Manuscript = ({ getThesisId }) => {
                 cellValues.row.adviser,
                 cellValues.row.chairperson,
                 cellValues.row.dean,
-                cellValues.row.abstract
+                cellValues.row.abstract,
+                cellValues.row.yearPublished
               );
             }}
           >
@@ -272,7 +273,8 @@ const Manuscript = ({ getThesisId }) => {
     adviser,
     chairperson,
     dean,
-    abstract
+    abstract,
+    year
   ) => {
     setThesisId(id);
 
@@ -291,6 +293,7 @@ const Manuscript = ({ getThesisId }) => {
       chairperson,
       dean,
       abstract,
+      year
     };
     setsingleThesis(data);
     setShowModalEdit(true);

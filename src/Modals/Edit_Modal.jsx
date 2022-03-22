@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ReactDom from "react-dom";
-import { Modal, Row, Col, Button, Form } from "react-bootstrap";
+import { Modal, Row, Col, Button, Form, ButtonGroup, ToggleButton } from "react-bootstrap";
 import {
   doc,
   collection,
@@ -13,6 +13,7 @@ import { db } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import thesisService from "../services/thesis.service";
+import "../sass/modals/_editmodal.scss";
 
 const Edit_Modal = ({ modalToggle, singleThesis }) => {
   //Use States for Modal
@@ -22,7 +23,7 @@ const Edit_Modal = ({ modalToggle, singleThesis }) => {
   //Use States for Thesis Content
   const [title, setTitle] = useState("");
 
-  const [course, setCourse] = useState("Information Technology");
+  const [course, setCourse] = useState("Information Technology"); 
   const [section, setSection] = useState("3-1");
   const [yearPublished, setYearPublished] = useState("");
 
@@ -40,6 +41,9 @@ const Edit_Modal = ({ modalToggle, singleThesis }) => {
   const [dean, setDean] = useState("");
 
   const [abstract, setAbstract] = useState("");
+
+  //Edit Mode
+  const [checked, setChecked] = useState(false)
 
   //Toast Controller
   const notifySuccess = () =>
@@ -61,7 +65,7 @@ const Edit_Modal = ({ modalToggle, singleThesis }) => {
 
   //For reset form
   const resetForm = () => {
-    document.getElementById("addFormId").reset();
+    document.getElementById("updateFormId").reset();
   };
 
   //Update Data to Firestore
@@ -82,18 +86,41 @@ const Edit_Modal = ({ modalToggle, singleThesis }) => {
       dean: dean,
       abstract: abstract,
     };
-    const newThesisRef = doc(collection(db, "thesisContent"));
+    //const newThesisRef = doc(collection(db, "thesisContent"));
 
     try {
-      await thesisService.updateThesis(data);
+      await thesisService.updateThesis(modalToggle, data);
       console.log("updated data : " + data);
     } catch (error) {
       console.log(error);
     }
   };
 
+  const setData = () => {
+    setTitle(singleThesis.title);
+    setCourse(singleThesis.course);
+    setSection(singleThesis.section);
+    setYearPublished(singleThesis.year);
+    setAuthors(singleThesis.authors);
+    setPanelists(singleThesis.panelists);
+    setNoOfCopies(singleThesis.noOfCopies);
+    setVolumeNo(singleThesis.volumeNo);
+    setGrades(singleThesis.grades);
+    setKeywords(singleThesis.keywords);
+    setAdviser(singleThesis.adviser);
+    setChairperson(singleThesis.chairperson);
+    setDean(singleThesis.dean);
+    setAbstract(singleThesis.abstract);
+  }
+
+  useEffect(() => {
+    setData();
+  }, [])
+  
+
+
   //Submit Function
-  const handleAddForm = (event) => {
+  const handleUpdateForm = (event) => {
     event.preventDefault();
     const form = event.currentTarget;
 
@@ -138,9 +165,10 @@ const Edit_Modal = ({ modalToggle, singleThesis }) => {
           <Form
             noValidate
             validated={validated}
-            id="addFormId"
-            onSubmit={handleAddForm}
+            id="updateFormId"
+            onSubmit={handleUpdateForm}
           >
+          <fieldset disabled={!checked}>
             <Row>
               <Col md={7} sm={12}>
                 {" "}
@@ -151,7 +179,7 @@ const Edit_Modal = ({ modalToggle, singleThesis }) => {
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Enter title"
                     required
-                    // value={singleThesis.title}
+                    value={title}
                   />
                   <Form.Control.Feedback type="invalid">
                     Please enter a title.
@@ -163,7 +191,7 @@ const Edit_Modal = ({ modalToggle, singleThesis }) => {
                       <Form.Label>Course</Form.Label>
                       <Form.Select
                         onChange={(e) => setCourse(e.target.value)}
-                        // value={singleThesis.course}
+                        value={course}
                       >
                         <option>Information Technology</option>
                         <option>Engineering</option>
@@ -175,7 +203,7 @@ const Edit_Modal = ({ modalToggle, singleThesis }) => {
                       <Form.Label>Section</Form.Label>
                       <Form.Select
                         onChange={(e) => setSection(e.target.value)}
-                        // value={singleThesis.section}
+                        value={section}
                       >
                         <option>3-1</option>
                         <option>3-2</option>
@@ -191,7 +219,7 @@ const Edit_Modal = ({ modalToggle, singleThesis }) => {
                       <Form.Label>Year Published</Form.Label>
                       <Form.Select
                         onChange={(e) => setYearPublished(e.target.value)}
-                        // value={singleThesis.yearPublished}
+                        value={yearPublished}
                       >
                         <option>2013</option>
                         <option>2014</option>
@@ -225,7 +253,7 @@ const Edit_Modal = ({ modalToggle, singleThesis }) => {
                         placeholder="Authors"
                         rows={2}
                         required
-                        // value={singleThesis.authors}
+                        value={authors}
                       />
                       <Form.Text className="text-muted">
                         Names must be separated by a comma. (e.g. Member A,
@@ -245,7 +273,7 @@ const Edit_Modal = ({ modalToggle, singleThesis }) => {
                         onChange={(e) => setPanelists(e.target.value)}
                         placeholder="Panelists"
                         required
-                        // // value={singleThesis.panelists}
+                        value={panelists}
                       />
                       <Form.Control.Feedback type="invalid">
                         Please enter Panelist.
@@ -262,7 +290,7 @@ const Edit_Modal = ({ modalToggle, singleThesis }) => {
                         onChange={(e) => setNoOfCopies(e.target.value)}
                         placeholder="Number of Copies"
                         required
-                        // value={singleThesis.noOfCopies}
+                        value={noOfCopies}
                       />
                       <Form.Control.Feedback type="invalid">
                         Please enter Number of Copies.
@@ -277,7 +305,7 @@ const Edit_Modal = ({ modalToggle, singleThesis }) => {
                         onChange={(e) => setVolumeNo(e.target.value)}
                         placeholder="Volume Number"
                         required
-                        // value={singleThesis.volumeNo}
+                        value={volumeNo}
                       />
                       <Form.Control.Feedback type="invalid">
                         Please enter Volume Number.
@@ -295,7 +323,7 @@ const Edit_Modal = ({ modalToggle, singleThesis }) => {
                         required
                         min={1}
                         max={100}
-                        // value={singleThesis.grades}
+                        value={grades}
                       />
                       <Form.Control.Feedback type="invalid">
                         Please enter a valid Grade (1-100).
@@ -310,7 +338,7 @@ const Edit_Modal = ({ modalToggle, singleThesis }) => {
                     onChange={(e) => setKeywords(e.target.value)}
                     placeholder="Keywords"
                     required
-                    // value={singleThesis.keywords}
+                    value={keywords}
                   />
                   <Form.Control.Feedback type="invalid">
                     Please enter a Keyword.
@@ -325,7 +353,7 @@ const Edit_Modal = ({ modalToggle, singleThesis }) => {
                         onChange={(e) => setAdviser(e.target.value)}
                         placeholder="Adviser"
                         required
-                        // value={singleThesis.adviser}
+                        value={adviser}
                       />
                       <Form.Control.Feedback type="invalid">
                         Please enter Adviser.
@@ -340,7 +368,7 @@ const Edit_Modal = ({ modalToggle, singleThesis }) => {
                         onChange={(e) => setChairperson(e.target.value)}
                         placeholder="Chairperson"
                         required
-                        // value={singleThesis.chairperson}
+                        value={chairperson}
                       />
                       <Form.Control.Feedback type="invalid">
                         Please enter Chairperson.
@@ -357,7 +385,7 @@ const Edit_Modal = ({ modalToggle, singleThesis }) => {
                         onChange={(e) => setDean(e.target.value)}
                         placeholder="Dean"
                         required
-                        // value={singleThesis.dean}
+                        value={dean}
                       />
                       <Form.Control.Feedback type="invalid">
                         Please enter Dean.
@@ -379,7 +407,7 @@ const Edit_Modal = ({ modalToggle, singleThesis }) => {
                     rows={10}
                     placeholder="Enter Abstract Details"
                     required
-                    // value={singleThesis.abstract}
+                    value={abstract}
                   />
                   <Form.Control.Feedback type="invalid">
                     Please enter Abstract Details.
@@ -387,8 +415,32 @@ const Edit_Modal = ({ modalToggle, singleThesis }) => {
                 </Form.Group>
               </Col>
             </Row>
-
-            <Row>
+          </fieldset>
+            <Row className="mt-3">
+              <Col>
+                <ButtonGroup>
+                  <ToggleButton
+                    id="toggle-check"
+                    type="checkbox"
+                    variant={checked ? "danger" : "primary"}
+                    checked={checked}
+                    value="1"
+                    onChange={(e) => setChecked(e.currentTarget.checked)}
+                  >
+                    {checked ? 'Cancel Editing' : 'Edit'}
+                  </ToggleButton>
+                  <Button
+                    type="Submit"
+                    variant="success"
+                    className={checked ? "visibleEl" : "hiddenEl"}
+                  >
+                    Save Changes
+                  </Button>
+                </ButtonGroup>
+              </Col>
+            </Row>
+          </Form>
+            {/* <Row>
               <Col
                 lg={6}
                 className="d-flex mt-4 justify-content-center align-items-center"
@@ -404,8 +456,7 @@ const Edit_Modal = ({ modalToggle, singleThesis }) => {
               >
                 <Button type="submit">Update Details</Button>
               </Col>
-            </Row>
-          </Form>
+            </Row> */}
         </Modal.Body>
       </Modal>
     </div>,
