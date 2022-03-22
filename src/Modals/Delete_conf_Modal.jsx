@@ -5,7 +5,7 @@ import { Modal, Button } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import thesisService from "../services/thesis.service";
 
-const Delete_Modal = ({modalToggle, thesisTitle}) => {
+const Delete_conf_Modal = ({modalToggle, thesisTitle}) => {
   const [show, setShow] = useState(true);
 
   //Magic Rerenderer AHAHAHAAA
@@ -43,4 +43,4 @@ const Delete_Modal = ({modalToggle, thesisTitle}) => {
   );
 };
 
-export default Delete_Modal;
+export default Delete_conf_Modal;

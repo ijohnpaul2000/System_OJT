@@ -287,13 +287,14 @@ const Edit_Modal = ({ modalToggle, singleThesis }) => {
                       <Form.Label>No. Of Copies</Form.Label>
                       <Form.Control
                         type="number"
+                        min={1}
                         onChange={(e) => setNoOfCopies(e.target.value)}
                         placeholder="Number of Copies"
                         required
                         value={noOfCopies}
                       />
                       <Form.Control.Feedback type="invalid">
-                        Please enter Number of Copies.
+                        Please enter valid number.
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
@@ -302,13 +303,14 @@ const Edit_Modal = ({ modalToggle, singleThesis }) => {
                       <Form.Label>Volume Number</Form.Label>
                       <Form.Control
                         type="number"
+                        min={1}
                         onChange={(e) => setVolumeNo(e.target.value)}
                         placeholder="Volume Number"
                         required
                         value={volumeNo}
                       />
                       <Form.Control.Feedback type="invalid">
-                        Please enter Volume Number.
+                        Please enter valid Volume Number.
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
@@ -321,12 +323,13 @@ const Edit_Modal = ({ modalToggle, singleThesis }) => {
                         onChange={(e) => setGrades(e.target.value)}
                         placeholder="Grades"
                         required
+                        step={0.01}
                         min={1}
-                        max={100}
+                        max={5}
                         value={grades}
                       />
                       <Form.Control.Feedback type="invalid">
-                        Please enter a valid Grade (1-100).
+                        Please enter a valid Grade (1.00-5.00).
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Col>

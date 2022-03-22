@@ -8,6 +8,7 @@ import {
   Button,
   Dropdown,
   DropdownButton,
+  ButtonGroup,
   Table,
 } from "react-bootstrap";
 import { FaCog, FaSearch } from "react-icons/fa";
@@ -40,11 +41,12 @@ import {
   BsTrash,
 } from "react-icons/bs";
 import Edit_Modal from "../Modals/Edit_Modal";
-import Delete_Modal from "../Modals/Delete_conf_Modal";
+import Delete_conf_Modal from "../Modals/Delete_conf_Modal";
 import View_Modal from "../Modals/View_Modal";
 
 //Material UI Imports
 import { DataGrid } from "@mui/x-data-grid";
+import { Chip, Stack, Avatar } from '@mui/material';
 
 const Manuscript = ({ getThesisId }) => {
   //Use States
@@ -98,37 +100,47 @@ const Manuscript = ({ getThesisId }) => {
       headerAlign: "center",
       renderCell: (cellValues) => {
         return (
-          <Button
-            className="center-btn"
-            variant="primary"
-            onClick={(event) => {
-              console.log(cellValues);
-              console.log("selected thesis : " + cellValues.row.thesisId);
-              openViewInfo(
-                cellValues.row.id,
-                cellValues.row.title,
-                cellValues.row.course,
-                cellValues.row.section,
-                cellValues.row.authors,
-                cellValues.row.panelists,
-                cellValues.row.noOfCopies,
-                cellValues.row.volumeNo,
-                cellValues.row.grades,
-                cellValues.row.keywords,
-                cellValues.row.adviser,
-                cellValues.row.chairperson,
-                cellValues.row.dean,
-                cellValues.row.abstract,
-                cellValues.row.yearPublished
-              );
-            }}
-          >
-            <IconContext.Provider value={{ color: "#fff" }}>
-              <div>
-                <BsFillEyeFill />
-              </div>
-            </IconContext.Provider>
-          </Button>
+          <ButtonGroup className="center-btn">
+            <Button
+              variant="primary"
+              onClick={(event) => {
+                console.log(cellValues);
+                console.log("selected thesis : " + cellValues.row.id);
+                openViewInfo(
+                  cellValues.row.id,
+                  cellValues.row.title,
+                  cellValues.row.course,
+                  cellValues.row.section,
+                  cellValues.row.authors,
+                  cellValues.row.panelists,
+                  cellValues.row.noOfCopies,
+                  cellValues.row.volumeNo,
+                  cellValues.row.grades,
+                  cellValues.row.keywords,
+                  cellValues.row.adviser,
+                  cellValues.row.chairperson,
+                  cellValues.row.dean,
+                  cellValues.row.abstract,
+                  cellValues.row.yearPublished
+                );
+              }}
+            >
+              <IconContext.Provider value={{ color: "#fff" }}>
+                <div>
+                  <BsFillEyeFill />
+                </div>
+              </IconContext.Provider>
+            </Button>
+            <Button variant="danger" onClick={() => {
+              openDeleteModal(cellValues.row.id, cellValues.row.title);
+            }}>
+              <IconContext.Provider value={{ color: "#fff" }}>
+                <div>
+                  <BsTrash />
+                </div>
+              </IconContext.Provider>
+            </Button>
+          </ButtonGroup>
         );
       },
     },
@@ -307,7 +319,14 @@ const Manuscript = ({ getThesisId }) => {
         size: "1.5rem",
       }}
     >
-      <p>Currenly Signed in as: {role} </p>
+      {/* <p>Currenly Signed in as: {role} </p> */}
+
+      <Stack direction="row" spacing={1} className="m-2">
+        <Chip
+          avatar={<Avatar alt={role} src={"https://avatars.dicebear.com/api/jdenticon/" + Math.random() + ".svg"} />}
+          label={"Currenly Signed in as " + role}
+        />
+      </Stack>
 
       <div>
         <ToastContainer
@@ -392,7 +411,7 @@ const Manuscript = ({ getThesisId }) => {
               <Edit_Modal singleThesis={singleThesis} modalToggle={thesisId} />
             )}
             {showModalDelete && (
-              <Delete_Modal modalToggle={thesisId} thesisTitle={title} />
+              <Delete_conf_Modal modalToggle={thesisId} thesisTitle={title} />
             )}
             {showModalView && (
               <View_Modal modalToggle={thesisId} singleThesis={singleThesis} />
