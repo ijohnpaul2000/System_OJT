@@ -84,6 +84,7 @@ const Manuscript = ({ getThesisId }) => {
     { field: "authors", headerName: "Authors", width: 200, flex: 2 },
     { field: "adviser", headerName: "Adviser", width: 200, flex: 2 },
     { field: "course", headerName: "Course", width: 180, flex: 2 },
+    { field: "keywords", headerName: "Keywords", width: 180, flex: 2 },
     {
       field: "yearPublished",
       headerName: "Year Published",
@@ -207,13 +208,6 @@ const Manuscript = ({ getThesisId }) => {
       console.log("No Such Document");
     }
   };
-
-  //Roles Bases Access
-  if (role === "Admin") {
-    component = <h1>Hello Admin</h1>;
-  } else if (role === "Encoder") {
-    component = <h1>Hello Encoder</h1>;
-  }
 
   //Rendering
   useEffect(() => {
@@ -346,9 +340,13 @@ const Manuscript = ({ getThesisId }) => {
           <Col className="d-flex justify-content-end align-items-center">
             <DropdownButton id="dropdown-basic-button" title="Settings">
               <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
-              <Dropdown.Item onClick={resetGuestPassword}>
-                Reset Guest Password
-              </Dropdown.Item>
+              {role === "Dean" ? (
+                <Dropdown.Item onClick={resetGuestPassword}>
+                  Reset Guest Password
+                </Dropdown.Item>
+              ) : (
+                ""
+              )}
             </DropdownButton>
           </Col>
         </Row>
@@ -357,13 +355,16 @@ const Manuscript = ({ getThesisId }) => {
         </Row>
 
         <Row>
-          <Col
-            xl={12}
-            lg={12}
-            md={12}
-            sm={12}
-            xs={12}
-            className="
+          {role === "Guest" ? (
+            ""
+          ) : (
+            <Col
+              xl={12}
+              lg={12}
+              md={12}
+              sm={12}
+              xs={12}
+              className="
             d-flex 
             justify-content-center 
             mt-sm-4
@@ -374,37 +375,50 @@ const Manuscript = ({ getThesisId }) => {
             justify-content-lg-center
             align-items-center
             "
-          >
-            <CSVLink
-              data={thesisData}
-              className="settings-btns export d-flex justify-content-center text-center settings-btns align-items-center"
             >
-              Export Masterlist
-            </CSVLink>
-            <Button className="settings-btns text-center ">
-              Import Export Masterlist
-            </Button>
-            <Button
-              className="settings-btns"
-              onClick={() => {
-                setShowModal(true);
-                console.log("clicked");
-              }}
-            >
-              Add Thesis
-              {showModal && <Add_Modal />}
-            </Button>
-          </Col>
+              {role === "Dean" ? (
+                <CSVLink
+                  data={thesisData}
+                  className="settings-btns export d-flex justify-content-center text-center settings-btns align-items-center"
+                >
+                  Export Masterlist
+                </CSVLink>
+              ) : (
+                ""
+              )}
+              {role === "Chairperson" || role === "Dean" ? (
+                <Button className="settings-btns text-center ">
+                  Export Masterlist as PDF
+                </Button>
+              ) : (
+                ""
+              )}
+              {role === "Dean" || role === "Encoder" ? (
+                <Button
+                  className="settings-btns"
+                  onClick={() => {
+                    setShowModal(true);
+                    console.log("clicked");
+                  }}
+                >
+                  Add Thesis
+                  {showModal && <Add_Modal />}
+                </Button>
+              ) : (
+                ""
+              )}
+            </Col>
+          )}
         </Row>
 
         <Row>
           <Col className="d-flex flex-column justify-content-center align-items-center">
-            <div style={{ height: 400, width: "100%" }}>
+            <div style={{ height: "70vh", width: "120%" }}>
               <DataGrid
                 rows={thesisData}
                 columns={columns}
-                pageSize={5}
-                rowsPerPageOptions={[5]}
+                pageSize={10}
+                rowsPerPageOptions={[10]}
               />
             </div>
             {showModalEdit && (
